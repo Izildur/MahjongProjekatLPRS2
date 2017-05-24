@@ -40,7 +40,7 @@
 #include "xio.h"
 #include "xil_exception.h"
 #include "vga_periph_mem.h"
-#include "minesweeper_sprites.h"
+#include "mahjong_sprites.h"
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>
 #define SIZE 9
@@ -292,13 +292,13 @@ void drawMap(int in_x, int in_y, int out_x, int out_y, int width, int height) {
 			oi = oy * 320 + ox;
 			ix = in_x + x;
 			iy = in_y + y;
-			ii = iy * minesweeper_sprites.width + ix;
-			R = minesweeper_sprites.pixel_data[ii
-					* minesweeper_sprites.bytes_per_pixel] >> 5;
-			G = minesweeper_sprites.pixel_data[ii
-					* minesweeper_sprites.bytes_per_pixel + 1] >> 5;
-			B = minesweeper_sprites.pixel_data[ii
-					* minesweeper_sprites.bytes_per_pixel + 2] >> 5;
+			ii = iy * mahjong_sprites.width + ix;
+			R = mahjong_sprites.pixel_data[ii
+					* mahjong_sprites.bytes_per_pixel] >> 5;
+			G = mahjong_sprites.pixel_data[ii
+					* mahjong_sprites.bytes_per_pixel + 1] >> 5;
+			B = mahjong_sprites.pixel_data[ii
+					* mahjong_sprites.bytes_per_pixel + 2] >> 5;
 			R <<= 6;
 			G <<= 3;
 			RGB = R | G | B;
