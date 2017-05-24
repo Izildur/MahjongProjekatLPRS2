@@ -86,7 +86,7 @@ BEGIN lmb_v10
 END
 
 BEGIN lmb_bram_if_cntlr
- PARAMETER INSTANCE = microblaze_0_i_bram_ctrl
+ PARAMETER INSTANCE = microblaze_0_i_bram_ctrl_0
  PARAMETER HW_VER = 3.10.c
  PARAMETER C_BASEADDR = 0x00000000
  PARAMETER C_HIGHADDR = 0x0000FFFF
@@ -102,7 +102,7 @@ BEGIN lmb_v10
 END
 
 BEGIN lmb_bram_if_cntlr
- PARAMETER INSTANCE = microblaze_0_d_bram_ctrl
+ PARAMETER INSTANCE = microblaze_0_d_bram_ctrl_0
  PARAMETER HW_VER = 3.10.c
  PARAMETER C_BASEADDR = 0x00000000
  PARAMETER C_HIGHADDR = 0x0000FFFF
@@ -111,7 +111,7 @@ BEGIN lmb_bram_if_cntlr
 END
 
 BEGIN bram_block
- PARAMETER INSTANCE = microblaze_0_bram_block
+ PARAMETER INSTANCE = microblaze_0_bram_block_0
  PARAMETER HW_VER = 1.00.a
  BUS_INTERFACE PORTA = microblaze_0_i_bram_ctrl_2_microblaze_0_bram_block
  BUS_INTERFACE PORTB = microblaze_0_d_bram_ctrl_2_microblaze_0_bram_block
@@ -199,5 +199,30 @@ BEGIN axi_intc
  BUS_INTERFACE INTERRUPT = axi_intc_0_INTERRUPT
  PORT S_AXI_ACLK = clk_100_0000MHz
  PORT Intr = vga_periph_mem_0_o_system_start_irq
+END
+
+BEGIN bram_block
+ PARAMETER INSTANCE = microblaze_0_bram_block_1
+ PARAMETER HW_VER = 1.00.a
+ BUS_INTERFACE PORTA = microblaze_0_d_bram_ctrl_1_BRAM_PORT
+ BUS_INTERFACE PORTB = microblaze_0_i_bram_ctrl_1_BRAM_PORT
+END
+
+BEGIN lmb_bram_if_cntlr
+ PARAMETER INSTANCE = microblaze_0_d_bram_ctrl_1
+ PARAMETER HW_VER = 3.10.c
+ PARAMETER C_BASEADDR = 0x00010000
+ PARAMETER C_HIGHADDR = 0x0001FFFF
+ BUS_INTERFACE SLMB = microblaze_0_dlmb
+ BUS_INTERFACE BRAM_PORT = microblaze_0_d_bram_ctrl_1_BRAM_PORT
+END
+
+BEGIN lmb_bram_if_cntlr
+ PARAMETER INSTANCE = microblaze_0_i_bram_ctrl_1
+ PARAMETER HW_VER = 3.10.c
+ PARAMETER C_BASEADDR = 0x00010000
+ PARAMETER C_HIGHADDR = 0x0001FFFF
+ BUS_INTERFACE SLMB = microblaze_0_ilmb
+ BUS_INTERFACE BRAM_PORT = microblaze_0_i_bram_ctrl_1_BRAM_PORT
 END
 
