@@ -314,8 +314,6 @@ void drawMap(int in_x, int in_y, int out_x, int out_y, int width, int height) {
 //drawing cursor for indicating position
 void drawingCursor(int startX, int startY, int endX, int endY) {
 
-
-
 	for (x = startX; x < endX; x++) {
 		for (y = startY; y < startY + 2; y++) {
 			i = y * 320 + x;

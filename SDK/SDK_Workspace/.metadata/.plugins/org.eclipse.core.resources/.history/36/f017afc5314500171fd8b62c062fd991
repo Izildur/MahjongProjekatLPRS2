@@ -314,8 +314,6 @@ void drawMap(int in_x, int in_y, int out_x, int out_y, int width, int height) {
 //drawing cursor for indicating position
 void drawingCursor(int startX, int startY, int endX, int endY) {
 
-
-
 	for (x = startX; x < endX; x++) {
 		for (y = startY; y < startY + 2; y++) {
 			i = y * 320 + x;
@@ -357,7 +355,7 @@ void drawingCursor(int startX, int startY, int endX, int endY) {
 //function that controls switches and buttons
 
 void move() {
-	int startX = 60, startY = 8, endX = 80, endY = 36;
+	int startX = 81, startY = 81, endX = 96, endY = 96;
 	int oldStartX, oldStartY, oldEndX, oldEndY;
 	int x, y, ic, ib, i, j;
 	int prethodnoStanje;
@@ -374,43 +372,43 @@ void move() {
 		if (btn_state == NOTHING_PRESSED) {
 			btn_state = SOMETHING_PRESSED;
 			if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & DOWN) == 0) {
-				if (endY < 233) {
+				if (endY < 224) {
 					oldStartY = startY;
 					oldEndY = endY;
-					startY += 28;
-					endY += 28;
+					startY += 16;
+					endY += 16;
 					drawingCursor(startX, startY, endX, endY);
-					//openField(startX, oldStartY, blankMap);
+					openField(startX, oldStartY, blankMap);
 				}
 
 			}
 
 			else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & RIGHT) == 0) {
 				randomCounter++;
-				if (endX < 261) {
+				if (endX < 224) {
 					oldStartX = startX;
-					startX += 20;
-					endX += 20;
+					startX += 16;
+					endX += 16;
 					drawingCursor(startX, startY, endX, endY);
-					//openField(oldStartX, startY, blankMap);
+					openField(oldStartX, startY, blankMap);
 
 				}
 			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & LEFT) == 0) {
-				if (startX > 59) {
+				if (startX > 81) {
 					oldStartX = startX;
-					startX -= 20;
-					endX -= 20;
+					startX -= 16;
+					endX -= 16;
 					drawingCursor(startX, startY, endX, endY);
-					//openField(oldStartX, startY, blankMap);
+					openField(oldStartX, startY, blankMap);
 				}
 
 			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & UP) == 0) {
-				if (startY > 7) {
+				if (startY > 81) {
 					oldStartY = startY;
-					startY -= 28;
-					endY -= 28;
+					startY -= 16;
+					endY -= 16;
 					drawingCursor(startX, startY, endX, endY);
-					//openField(startX, oldStartY, blankMap);
+					openField(startX, oldStartY, blankMap);
 				}
 
 			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & CENTER)
@@ -647,9 +645,11 @@ int main() {
 	}
 
 
-	// nas pokusaj pravljenja mape - relativno uspjesan, napravili smo mapu sa tri nivoa
+	// nas pokusaj pravljenja mape
 
 
+
+	//smiley
 	for(i = 0; i < 10; i++){
 		for( j = 0; j < 8; j++){
 			drawMap(i*20, 0, 60+i*20, 8+j*28, 20, 28);
@@ -658,15 +658,9 @@ int main() {
 
 	for(i = 0; i < 8; i++){
 			for( j = 0; j < 6; j++){
-				drawMap(i*20, 0, 83+i*20, 32+j*28, 20, 28);
+				drawMap(i*20, 0, 83+i*20, 33+j*28, 20, 28);
 			}
 		}
-
-	for(i = 0; i < 6; i++){
-				for( j = 0; j < 4; j++){
-					drawMap(i*20, 0, 106+i*20, 56+j*28, 20, 28);
-				}
-			}
 
 
 

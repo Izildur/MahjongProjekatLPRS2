@@ -314,7 +314,23 @@ void drawMap(int in_x, int in_y, int out_x, int out_y, int width, int height) {
 //drawing cursor for indicating position
 void drawingCursor(int startX, int startY, int endX, int endY) {
 
+	for(i = 0; i < 10; i++){
+			for( j = 0; j < 8; j++){
+				drawMap(i*20, 0, 60+i*20, 8+j*28, 20, 28);
+			}
+		}
 
+		for(i = 0; i < 8; i++){
+				for( j = 0; j < 6; j++){
+					drawMap(i*20, 0, 83+i*20, 32+j*28, 20, 28);
+				}
+			}
+
+		for(i = 0; i < 6; i++){
+					for( j = 0; j < 4; j++){
+						drawMap(i*20, 0, 106+i*20, 56+j*28, 20, 28);
+					}
+				}
 
 	for (x = startX; x < endX; x++) {
 		for (y = startY; y < startY + 2; y++) {

@@ -314,8 +314,6 @@ void drawMap(int in_x, int in_y, int out_x, int out_y, int width, int height) {
 //drawing cursor for indicating position
 void drawingCursor(int startX, int startY, int endX, int endY) {
 
-
-
 	for (x = startX; x < endX; x++) {
 		for (y = startY; y < startY + 2; y++) {
 			i = y * 320 + x;
@@ -380,7 +378,7 @@ void move() {
 					startY += 28;
 					endY += 28;
 					drawingCursor(startX, startY, endX, endY);
-					//openField(startX, oldStartY, blankMap);
+					openField(startX, oldStartY, blankMap);
 				}
 
 			}
@@ -392,7 +390,7 @@ void move() {
 					startX += 20;
 					endX += 20;
 					drawingCursor(startX, startY, endX, endY);
-					//openField(oldStartX, startY, blankMap);
+					openField(oldStartX, startY, blankMap);
 
 				}
 			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & LEFT) == 0) {
@@ -401,7 +399,7 @@ void move() {
 					startX -= 20;
 					endX -= 20;
 					drawingCursor(startX, startY, endX, endY);
-					//openField(oldStartX, startY, blankMap);
+					openField(oldStartX, startY, blankMap);
 				}
 
 			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & UP) == 0) {
@@ -410,7 +408,7 @@ void move() {
 					startY -= 28;
 					endY -= 28;
 					drawingCursor(startX, startY, endX, endY);
-					//openField(startX, oldStartY, blankMap);
+					openField(startX, oldStartY, blankMap);
 				}
 
 			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & CENTER)
