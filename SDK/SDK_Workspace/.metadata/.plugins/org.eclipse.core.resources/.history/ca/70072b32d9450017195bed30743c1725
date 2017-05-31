@@ -80,8 +80,6 @@ char blankMap[9][9];
 //map used for opening the blank fields that surround blank field selected
 char indicationMap[9][9];
 
-int randomMap[3][8][10];
-
 //end of game
 void printOutEndOfGame(char blankTable[SIZE][SIZE], char solvedMap[SIZE][SIZE]) {
 	int i, j, ii, jj;
@@ -191,8 +189,8 @@ void openField(int x, int y, char map[9][9]) {
 }
 
 //function that generates random game map
-void makeTable() {
-	int numOfSprites, row, column,level, i, j, k, r, m;
+void makeTable(int temp[3][8][10]) {
+	int numOfSprites, row, column,level, i, j, k, r, m, surroundingMines = 0;
 	int table[3][8][10];
 
 	srand(randomCounter);
@@ -201,7 +199,7 @@ void makeTable() {
 	for (i = 0; i < 3; i++) {
 		for (j = 0; j < 8; j++) {
 			for (k = 0; k < 10; k++)
-			randomMap[i][j][k] = -1;
+			table[i][j][k] = -1;
 		}
 	}
 
@@ -210,29 +208,15 @@ void makeTable() {
 		numOfSprites = NUMOFSPRITES;
 		while (numOfSprites >= 0) {
 			level = rand() % 3;
-			if(level == 0){
-				row = rand() % 8;
-				column = rand() % 10;
-			} else if(level == 1){
-				row = rand() % 6;
-				column = rand() % 8;
-				row += 1;
-				column += 1;
-			}else{
-				row = rand() % 4;
-				column = rand() % 6;
-				row += 2;
-				column += 2;
-			}
-			if (randomMap[level][row][column] == -1) {
-				randomMap[level][row][column] = numOfSprites;
+			row = rand() % 8;
+			column = rand() % 10;
+			if (table[level][row][column] == -1) {
+				table[level][row][column] = numOfSprites;
 				numOfSprites--;
 			}
 		}
 	}
 
-
-/*
 	//proverava poziciju mina i ispisuje brojeve na odg mesta
 	for (i = 0; i < 9; i++) {
 		for (j = 0; j < 9; j++) {
@@ -300,7 +284,7 @@ void makeTable() {
 		}
 		xil_printf("\n");
 	}
-*/
+
 }
 
 //extracting pixel data from a picture for printing out on the display
@@ -388,7 +372,7 @@ void move() {
 	} btn_state_t;
 	btn_state_t btn_state = NOTHING_PRESSED;
 
-//	makeTable(solvedMap);
+	makeTable(solvedMap);
 	drawingCursor(startX, startY, endX, endY);
 
 	while (endOfGame != 1) {
@@ -446,8 +430,8 @@ void move() {
 				firstTimeCenter++;
 				if (firstTimeCenter == 1) {
 					randomCounter++;
-					//while (solvedMap[m][n] == BOMB)
-						//makeTable(solvedMap);
+					while (solvedMap[m][n] == BOMB)
+						makeTable(solvedMap);
 				}
 				openField(startX, startY, solvedMap);
 				int ii = 0, jj = 0;
@@ -614,7 +598,7 @@ void move() {
 
 int main() {
 
-	int j, p, r, i, k;
+	int j, p, r, i;
 	inc1 = 0;
 	inc2 = 0;
 	numOfFlags = NUMOFMINES;
@@ -675,38 +659,6 @@ int main() {
 
 	// nas pokusaj pravljenja mape - relativno uspjesan, napravili smo mapu sa tri nivoa
 
-	makeTable();
-
-
-	for (i = 0; i < 3; i++) {
-		for (j = 0; j < 8; j++) {
-			for (k = 0; k < 10; k++){
-				if( i == 0){
-					drawMap(randomMap[i][j][k]*20, 0, 60+k*20, 8+j*28, 20, 28 );
-				}else if(i == 1){
-					if( j > 0 && j < 7 && k > 1 && k < 9){
-					drawMap(randomMap[i][j][k]*20, 0, 60+k*20+2, 8+j*28+3, 20, 28 );
-					}
-				}else{
-					if( j > 1 && j < 6 && k > 2 && k < 8){
-					drawMap(randomMap[i][j][k]*20, 0, 60+k*20+4, 8+j*28+6, 20, 28 );
-					}
-				}
-			}
-		}
-	}
-
-
-
-
-
-
-
-
-
-
-
-	/*
 
 	for(i = 0; i < 10; i++){
 		for( j = 0; j < 8; j++){
@@ -725,7 +677,7 @@ int main() {
 					drawMap(i*20, 0, 106+i*20, 56+j*28, 20, 28);
 				}
 			}
-*/
+
 
 
 

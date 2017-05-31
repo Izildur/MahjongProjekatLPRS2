@@ -230,8 +230,6 @@ void makeTable() {
 			}
 		}
 	}
-
-
 /*
 	//proverava poziciju mina i ispisuje brojeve na odg mesta
 	for (i = 0; i < 9; i++) {
@@ -614,7 +612,7 @@ void move() {
 
 int main() {
 
-	int j, p, r, i, k;
+	int j, p, r, i;
 	inc1 = 0;
 	inc2 = 0;
 	numOfFlags = NUMOFMINES;
@@ -677,34 +675,14 @@ int main() {
 
 	makeTable();
 
-
+/*
 	for (i = 0; i < 3; i++) {
 		for (j = 0; j < 8; j++) {
-			for (k = 0; k < 10; k++){
-				if( i == 0){
-					drawMap(randomMap[i][j][k]*20, 0, 60+k*20, 8+j*28, 20, 28 );
-				}else if(i == 1){
-					if( j > 0 && j < 7 && k > 1 && k < 9){
-					drawMap(randomMap[i][j][k]*20, 0, 60+k*20+2, 8+j*28+3, 20, 28 );
-					}
-				}else{
-					if( j > 1 && j < 6 && k > 2 && k < 8){
-					drawMap(randomMap[i][j][k]*20, 0, 60+k*20+4, 8+j*28+6, 20, 28 );
-					}
-				}
-			}
+			for (k = 0; k < 10; k++)
+			drawMap(randomMap[i][j][k]*20, 0,  );
 		}
 	}
-
-
-
-
-
-
-
-
-
-
+*/
 
 	/*
 

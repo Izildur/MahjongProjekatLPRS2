@@ -685,11 +685,11 @@ int main() {
 					drawMap(randomMap[i][j][k]*20, 0, 60+k*20, 8+j*28, 20, 28 );
 				}else if(i == 1){
 					if( j > 0 && j < 7 && k > 1 && k < 9){
-					drawMap(randomMap[i][j][k]*20, 0, 60+k*20+2, 8+j*28+3, 20, 28 );
+					drawMap(randomMap[i][j][k]*20, 0, 60+k*20+3, 8+j*28+2, 20, 28 );
 					}
 				}else{
 					if( j > 1 && j < 6 && k > 2 && k < 8){
-					drawMap(randomMap[i][j][k]*20, 0, 60+k*20+4, 8+j*28+6, 20, 28 );
+					drawMap(randomMap[i][j][k]*20, 0, 60+k*20+6, 8+j*28+4, 20, 28 );
 					}
 				}
 			}
