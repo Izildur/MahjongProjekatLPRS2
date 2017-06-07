@@ -381,7 +381,8 @@ void drawingCursor(int startX, int startY, int endX, int endY) {
 void move() {
 	int startX = 60, startY = 8, endX = 80, endY = 36;	//cursor start, end, coordinates
 	int oldStartX, oldStartY, oldEndX, oldEndY;
-	int x, y, ic, ib, i, j;
+	int sadasnji_nivo, sledeci_nivo, razlika;
+	int x, y, ic, ib, i = 0, j = 0;
 	int prethodnoStanje;
 	typedef enum {
 		NOTHING_PRESSED, SOMETHING_PRESSED
@@ -395,48 +396,164 @@ void move() {
 
 		if (btn_state == NOTHING_PRESSED) {
 			btn_state = SOMETHING_PRESSED;
+
+
+			if(randomMap[0][i][j] != -1){
+				sadasnji_nivo = 0;
+			}
+			if(randomMap[1][i][j] != -1){
+				sadasnji_nivo = 1;
+			}
+			if(randomMap[2][i][j] != -1){
+				sadasnji_nivo = 2;
+			}
+
 			if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & DOWN) == 0) {
+
+
+
+
 				if (endY < 213) {
-					oldStartY = startY;
+
+					if(randomMap[0][i+1][j] != -1){
+						sledeci_nivo = 0;
+					}
+					if(randomMap[1][i+1][j] != -1){
+						sledeci_nivo = 1;
+					}
+					if(randomMap[2][i+1][j] != -1){
+						sledeci_nivo = 2;
+					}
+
+					razlika = sadasnji_nivo - sledeci_nivo;
+
+						i = i + 1;
+
+						oldStartX = startX;
+						oldStartY = startY;
 					oldEndY = endY;
 					startY += 28;
 					endY += 28;
+
+					startX = startX -(razlika*(2));
+					startY = startY +(razlika*(3));
+					endX = endX-(razlika*(2));
+					endY = endY+(razlika*(3));
+
+
 					drawingCursor(startX, startY, endX, endY);
 					//openField(startX, oldStartY, blankMap);
-					drawMap(0,0,startX,oldStartY, 20, 28 );
+					drawMap(randomMap[sadasnji_nivo][i-1][j]*20,0,oldStartX,oldStartY, 20, 28 );
+
 				}
 
 			}
 
 			else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & RIGHT) == 0) {
 				randomCounter++;
-				if (endX < 241) {
+
+
+
+				if (endX < 251) {
+
+					if(randomMap[0][i][j+1] != -1){
+						sledeci_nivo = 0;
+					}
+					if(randomMap[1][i][j+1] != -1){
+						sledeci_nivo = 1;
+					}
+					if(randomMap[2][i][j+1] != -1){
+						sledeci_nivo = 2;
+					}
+
+					razlika = sadasnji_nivo - sledeci_nivo;
+
+					j = j + 1;
+
 					oldStartX = startX;
+					oldStartY = startY;
 					startX += 20;
 					endX += 20;
+					startX = startX -(razlika*(2));
+					startY = startY +(razlika*(3));
+					endX = endX-(razlika*(2));
+					endY = endY+(razlika*(3));
+
+
 					drawingCursor(startX, startY, endX, endY);
 					//openField(oldStartX, startY, blankMap);
-					drawMap(0,0,oldStartX,startY, 20, 28 );
+					drawMap(randomMap[sadasnji_nivo][i][j-1]*20,0,oldStartX,oldStartY, 20, 28 );
 
 				}
 			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & LEFT) == 0) {
+
+
+
 				if (startX > 79) {
+
+					if(randomMap[0][i][j-1] != -1){
+						sledeci_nivo = 0;
+					}
+					if(randomMap[1][i][j-1] != -1){
+						sledeci_nivo = 1;
+					}
+					if(randomMap[2][i][j-1] != -1){
+						sledeci_nivo = 2;
+					}
+
+					razlika = sadasnji_nivo - sledeci_nivo;
+
+					j = j - 1;
+
 					oldStartX = startX;
+					oldStartY = startY;
 					startX -= 20;
 					endX -= 20;
+					startX = startX -(razlika*(2));
+					startY = startY +(razlika*(3));
+					endX = endX-(razlika*(2));
+					endY = endY+(razlika*(3));
+
+
 					drawingCursor(startX, startY, endX, endY);
 					//openField(oldStartX, startY, blankMap);
-					drawMap(0,0,oldStartX,startY, 20, 28 );
+					drawMap(randomMap[sadasnji_nivo][i][j+1]*20,0,oldStartX,oldStartY, 20, 28 );
 				}
 
 			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & UP) == 0) {
+
+
+
 				if (startY > 27) {
+
+					if(randomMap[0][i-1][j] != -1){
+						sledeci_nivo = 0;
+					}
+					if(randomMap[1][i-1][j] != -1){
+						sledeci_nivo = 1;
+					}
+					if(randomMap[2][i-1][j] != -1){
+						sledeci_nivo = 2;
+					}
+
+					razlika = sadasnji_nivo - sledeci_nivo;
+
+					i = i - 1;
+
+					oldStartX = startX;
 					oldStartY = startY;
 					startY -= 28;
 					endY -= 28;
+					startX = startX -(razlika*(2));
+					startY = startY +(razlika*(3));
+					endX = endX-(razlika*(2));
+					endY = endY+(razlika*(3));
+
+
 					drawingCursor(startX, startY, endX, endY);
 					//openField(startX, oldStartY, blankMap);
-					drawMap(0,0,startX,oldStartY, 20, 28 );
+
+					drawMap(randomMap[sadasnji_nivo][i+1][j]*20,0,oldStartX,oldStartY, 20, 28 );
 				}
 
 			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & CENTER)
@@ -685,48 +802,18 @@ int main() {
 				if( i == 0){
 					drawMap(randomMap[i][j][k]*20, 0, 60+k*20, 8+j*28, 20, 28 );
 				}else if(i == 1){
-					if( j > 0 && j < 7 && k > 1 && k < 9){
-					drawMap(randomMap[i][j][k]*20, 0, 60+k*20+2, 8+j*28+3, 20, 28 );
+					if( j > 0 && j < 7 && k > 0 && k < 9){
+					drawMap(randomMap[i][j][k]*20, 0, 60+k*20+2, 8+j*28-3, 20, 28 );
 					}
 				}else{
-					if( j > 1 && j < 6 && k > 2 && k < 8){
-					drawMap(randomMap[i][j][k]*20, 0, 60+k*20+4, 8+j*28+6, 20, 28 );
+					if( j > 1 && j < 6 && k > 1 && k < 8){
+					drawMap(randomMap[i][j][k]*20, 0, 60+k*20+4, 8+j*28-6, 20, 28 );
 					}
 				}
 			}
 		}
 	}
 
-
-
-
-
-
-
-
-
-
-
-	/*
-
-	for(i = 0; i < 10; i++){
-		for( j = 0; j < 8; j++){
-			drawMap(i*20, 0, 60+i*20, 8+j*28, 20, 28);
-		}
-	}
-
-	for(i = 0; i < 8; i++){
-			for( j = 0; j < 6; j++){
-				drawMap(i*20, 0, 83+i*20, 32+j*28, 20, 28);
-			}
-		}
-
-	for(i = 0; i < 6; i++){
-				for( j = 0; j < 4; j++){
-					drawMap(i*20, 0, 106+i*20, 56+j*28, 20, 28);
-				}
-			}
-*/
 
 
 
