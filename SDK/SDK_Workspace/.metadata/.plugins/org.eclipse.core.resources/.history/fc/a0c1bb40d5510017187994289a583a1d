@@ -645,27 +645,26 @@ void move() {
 										if(nova_pozicija == 0) {
 										if (randomMap[ii][jj][k] != -1) {
 											nova_pozicija = 1;
-											i = jj;
-											j = k;
+											j = jj;
+											i = k;
 											sadasnji_nivo = ii;
 
 											//int startX = 60, startY = 8, endX = 80, endY = 36;
 											if (sadasnji_nivo == 0) {
-												startX = 60 + j*20;
-												startY = 8 + i*28;
-												endX = 60 + j*20 + 20;
-												endY = 8 + i*28 + 28;
-
+												startX = 60 + i*20;
+												startY = 8 + j*28;
+												endX = 60 + i*20 + 20;
+												endY = 8 + j*28 + 28;
 											} else if (sadasnji_nivo == 1) {
-												startX = 60 + j*20 +2;
-												startY = 8 + i*28 -3;
-												endX = 60 + j*20 + 20 +2;
-												endY = 8 + i*28 + 28 -3;
+												startX = 60 + i*20 +2;
+												startY = 8 + j*28 -3;
+												endX = 60 + i*20 + 20 +2;
+												endY = 8 + j*28 + 28 -3;
 											} else if (sadasnji_nivo == 2) {
-												startX = 60 + j*20 +4;
-												startY = 8 + i*28 -6;
-												endX = 60 + j*20 + 20 +4;
-												endY = 8 + i*28 + 28 -6;
+												startX = 60 + i*20 +4;
+												startY = 8 + j*28 -6;
+												endX = 60 + i*20 + 20 +4;
+												endY = 8 + j*28 + 28 -6;
 
 											}
 										}

@@ -376,20 +376,6 @@ void drawingCursor(int startX, int startY, int endX, int endY) {
 
 }
 
-
-void drawBlue(int startX, int endX, int startY, int endY){
-
-	for (x = startX; x < endX; x++) {
-		for (y = startY; y < endY; y++) {
-			i = y * 320 + x;
-			VGA_PERIPH_MEM_mWriteMemory(
-			XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
-			+ i * 4, 0x000000);
-		}
-	}
-
-}
-
 //function that controls switches and buttons
 
 void move() {
@@ -444,10 +430,9 @@ void move() {
 
 						i = i + 1;
 
-					oldStartX = startX;
-					oldStartY = startY;
+						oldStartX = startX;
+						oldStartY = startY;
 					oldEndY = endY;
-					oldEndX = endX;
 					startY += 28;
 					endY += 28;
 
@@ -460,11 +445,7 @@ void move() {
 					drawingCursor(startX, startY, endX, endY);
 					//openField(startX, oldStartY, blankMap);
 					if(flagForCursor == 0){
-						if(sadasnji_nivo == 0 && randomMap[sadasnji_nivo][i-1][j] == -1){
-							drawBlue(oldStartX, oldEndX, oldStartY, oldEndY);
-						}else{
-							drawMap(randomMap[sadasnji_nivo][i-1][j]*20,0,oldStartX,oldStartY, 20, 28 );
-						}
+						drawMap(randomMap[sadasnji_nivo][i-1][j]*20,0,oldStartX,oldStartY, 20, 28 );
 					}else{
 						flagForCursor = 0;
 					}
@@ -495,8 +476,6 @@ void move() {
 
 					oldStartX = startX;
 					oldStartY = startY;
-					oldEndY = endY;
-					oldEndX = endX;
 					startX += 20;
 					endX += 20;
 					startX = startX -(razlika*(2));
@@ -508,11 +487,7 @@ void move() {
 					drawingCursor(startX, startY, endX, endY);
 					//openField(oldStartX, startY, blankMap);
 					if(flagForCursor == 0){
-						if(sadasnji_nivo == 0 && randomMap[sadasnji_nivo][i][j-1] == -1){
-							drawBlue(oldStartX, oldEndX, oldStartY, oldEndY);
-						}else{
-							drawMap(randomMap[sadasnji_nivo][i][j-1]*20,0,oldStartX,oldStartY, 20, 28 );
-						}
+					drawMap(randomMap[sadasnji_nivo][i][j-1]*20,0,oldStartX,oldStartY, 20, 28 );
 					}else{
 						flagForCursor = 0;
 					}
@@ -540,8 +515,6 @@ void move() {
 
 					oldStartX = startX;
 					oldStartY = startY;
-					oldEndY = endY;
-					oldEndX = endX;
 					startX -= 20;
 					endX -= 20;
 					startX = startX -(razlika*(2));
@@ -553,11 +526,7 @@ void move() {
 					drawingCursor(startX, startY, endX, endY);
 					//openField(oldStartX, startY, blankMap);
 					if(flagForCursor == 0){
-						if(sadasnji_nivo == 0 && randomMap[sadasnji_nivo][i][j+1] == -1){
-							drawBlue(oldStartX, oldEndX, oldStartY, oldEndY);
-						}else{
-							drawMap(randomMap[sadasnji_nivo][i][j+1]*20,0,oldStartX,oldStartY, 20, 28 );
-						}
+					drawMap(randomMap[sadasnji_nivo][i][j+1]*20,0,oldStartX,oldStartY, 20, 28 );
 					}else{
 						flagForCursor = 0;
 					}
@@ -585,8 +554,6 @@ void move() {
 
 					oldStartX = startX;
 					oldStartY = startY;
-					oldEndY = endY;
-					oldEndX = endX;
 					startY -= 28;
 					endY -= 28;
 					startX = startX -(razlika*(2));
@@ -598,11 +565,7 @@ void move() {
 					drawingCursor(startX, startY, endX, endY);
 					//openField(startX, oldStartY, blankMap);
 					if(flagForCursor == 0){
-						if(sadasnji_nivo == 0 && randomMap[sadasnji_nivo][i+1][j] == -1){
-							drawBlue(oldStartX, oldEndX, oldStartY, oldEndY);
-						}else{
-							drawMap(randomMap[sadasnji_nivo][i+1][j]*20,0,oldStartX,oldStartY, 20, 28 );
-						}
+					drawMap(randomMap[sadasnji_nivo][i+1][j]*20,0,oldStartX,oldStartY, 20, 28 );
 					}else{
 						flagForCursor = 0;
 
@@ -651,21 +614,20 @@ void move() {
 
 											//int startX = 60, startY = 8, endX = 80, endY = 36;
 											if (sadasnji_nivo == 0) {
-												startX = 60 + j*20;
-												startY = 8 + i*28;
-												endX = 60 + j*20 + 20;
-												endY = 8 + i*28 + 28;
-
+												startX = 60 + i*20;
+												startY = 8 + j*28;
+												endX = startX + 28;
+												endY = startY + 20;
 											} else if (sadasnji_nivo == 1) {
-												startX = 60 + j*20 +2;
-												startY = 8 + i*28 -3;
-												endX = 60 + j*20 + 20 +2;
-												endY = 8 + i*28 + 28 -3;
+												startX = 60 + i*20 +2;
+												startY = 8 + j*28 -3;
+												endX = startX + 28 +2;
+												endY = startY + 20 -3;
 											} else if (sadasnji_nivo == 2) {
-												startX = 60 + j*20 +4;
-												startY = 8 + i*28 -6;
-												endX = 60 + j*20 + 20 +4;
-												endY = 8 + i*28 + 28 -6;
+												startX = 60 + i*20 +4;
+												startY = 8 + j*28 -6;
+												endX = startX + 28 +4;
+												endY = startY + 20 -6;
 
 											}
 										}
@@ -695,12 +657,6 @@ void move() {
 												drawMap(randomMap[ii][jj][k]*20, 0, 60+k*20+4, 8+jj*28-6, 20, 28 );
 												}
 											}
-										}else{
-											if(ii == 0){
-												drawBlue(60 + k*20, 60+ k*20+20, 8+jj*28, 8+jj*28+28);
-
-											}
-
 										}
 									}
 								}
@@ -875,8 +831,6 @@ void move() {
 	}
 
 }
-
-
 
 int main() {
 
