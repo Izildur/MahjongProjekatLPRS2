@@ -382,7 +382,7 @@ void move() {
 	int startX = 60, startY = 8, endX = 80, endY = 36;	//cursor start, end, coordinates
 	int oldStartX, oldStartY, oldEndX, oldEndY;
 	int sadasnji_nivo, sledeci_nivo, razlika;
-	int x, y, ic, ib, i = 0, j = 0, ii, jj, k;
+	int x, y, ic, ib, i = 0, j = 0;
 	int flagJedanMarkiran = 0, flagX = -1, flagY = -1, flagVisina = -1, flag = 0, flagForCursor = 0;
 	int prethodnoStanje;
 	typedef enum {
@@ -600,27 +600,6 @@ void move() {
 							flag = 0;
 
 
-							//drawMap(randomMap[flagVisina][flagX][flagY]*20,0,oldStartX,oldStartY, 20, 28 );
-
-							for (ii = 0; ii < 3; ii++) {
-								for (jj = 0; jj < 8; jj++) {
-									for (k = 0; k < 10; k++){
-										if(randomMap[ii][jj][k] != -1){
-											if( ii == 0){
-												drawMap(randomMap[ii][jj][k]*20, 0, 60+k*20, 8+jj*28, 20, 28 );
-											}else if(ii == 1){
-												if( jj > 0 && jj < 7 && k > 0 && k < 9){
-												drawMap(randomMap[ii][j][k]*20, 0, 60+k*20+2, 8+jj*28-3, 20, 28 );
-												}
-											}else{
-												if( jj > 1 && jj < 6 && k > 1 && k < 8){
-												drawMap(randomMap[ii][jj][k]*20, 0, 60+k*20+4, 8+jj*28-6, 20, 28 );
-												}
-											}
-										}
-									}
-								}
-							}
 
 
 
