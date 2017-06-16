@@ -72,7 +72,7 @@ void makeTable() {
 	int numOfSprites, row, column, level, i, j, k, r, m;
 	int table[3][8][10];
 
-	srand(rand()%50);
+	srand(100);
 
 	//popunjava matricu sa -1
 	for (i = 0; i < 3; i++) {

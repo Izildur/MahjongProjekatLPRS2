@@ -72,7 +72,7 @@ void makeTable() {
 	int numOfSprites, row, column, level, i, j, k, r, m;
 	int table[3][8][10];
 
-	srand(rand()%50);
+	srand(randomCounter);
 
 	//popunjava matricu sa -1
 	for (i = 0; i < 3; i++) {
@@ -215,7 +215,7 @@ void move() {
 //	makeTable(solvedMap);
 	drawingCursor(startX, startY, endX, endY);
 
-	while (1) {
+	while (endOfGame != 1) {
 
 		if (btn_state == NOTHING_PRESSED) {
 			btn_state = SOMETHING_PRESSED;
@@ -281,6 +281,7 @@ void move() {
 			}
 
 			else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & RIGHT) == 0) {
+				randomCounter++;
 
 
 

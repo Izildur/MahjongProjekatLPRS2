@@ -72,7 +72,7 @@ void makeTable() {
 	int numOfSprites, row, column, level, i, j, k, r, m;
 	int table[3][8][10];
 
-	srand(rand()%50);
+	srand(randomCounter);
 
 	//popunjava matricu sa -1
 	for (i = 0; i < 3; i++) {
@@ -215,7 +215,7 @@ void move() {
 //	makeTable(solvedMap);
 	drawingCursor(startX, startY, endX, endY);
 
-	while (1) {
+	while (endOfGame != 1) {
 
 		if (btn_state == NOTHING_PRESSED) {
 			btn_state = SOMETHING_PRESSED;
@@ -281,6 +281,7 @@ void move() {
 			}
 
 			else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & RIGHT) == 0) {
+				randomCounter++;
 
 
 
@@ -512,147 +513,8 @@ void move() {
 					}
 				}
 
-/*
-				for (i = 0; i < SIZE; i++) {
-					for (j = 0; j < SIZE; j++) {
-						if (indicationMap[i][j] == 'x') {
-							ii = (i * 16) + 80;
-							jj = (j * 16) + 80;
 
-							if (solvedMap[i][j] == BLANK) {
-								drawMap(0, 0, ii, jj, 16, 16);
-								blankMap[i][j] = BLANK;
-							}
-							if (solvedMap[i][j] == NUM2) {
-								drawMap(32, 0, ii, jj, 16, 16);
-								blankMap[i][j] = NUM2;
-							}
-							if (solvedMap[i][j] == NUM1) {
-								drawMap(16, 0, ii, jj, 16, 16);
-								blankMap[i][j] = NUM1;
-							}
-							if (solvedMap[i][j] == NUM3) {
-								drawMap(48, 0, ii, jj, 16, 16);
-								blankMap[i][j] = NUM3;
-							}
-							if (solvedMap[i][j] == NUM4) {
-								drawMap(64, 0, ii, jj, 16, 16);
-								blankMap[i][j] = NUM4;
-							}
-						}
-					}
-				}
-
-			*/} /*else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & SW0) != 0) { //flag
-
-				if (numOfFlags > 0 && numOfFlags <= NUMOFMINES) {
-					int x = (startX - 80) / 16;
-					int y = (startY - 80) / 16;
-					if (blankMap[x][y] != FLAG && blankMap[x][y] == BEG) {
-						drawMap(64, 16, startX - 1, startY - 1, 16, 16);
-
-						blankMap[x][y] = FLAG;
-
-						numOfFlags--;
-						//checks if the flag is in the right place
-						if (solvedMap[x][y] == BOMB) {
-							flagTrue++;
-							if (flagTrue == NUMOFMINES) {
-
-								endOfGame = 1;
-								drawMap(103, 54, 120, 54, 27, 26);
-							}
-						}
-
-					}
-					//prints out flag counter
-					switch (numOfFlags) {
-					case 9:
-						drawMap(116, 32, 168, 54, 13, 23);
-						break;
-					case 8:
-						drawMap(103, 32, 168, 54, 13, 23);
-						break;
-					case 7:
-						drawMap(90, 32, 168, 54, 13, 23);
-						break;
-					case 6:
-						drawMap(77, 32, 168, 54, 13, 23);
-						break;
-					case 5:
-						drawMap(64, 32, 168, 54, 14, 23);
-						break;
-					case 4:
-						drawMap(51, 32, 168, 54, 13, 23);
-						break;
-					case 3:
-						drawMap(38, 32, 168, 54, 13, 23);
-						break;
-					case 2:
-						drawMap(25, 32, 168, 54, 13, 23);
-						break;
-					case 1:
-						drawMap(13, 32, 168, 54, 13, 23);
-						break;
-					case 0:
-						drawMap(0, 32, 168, 54, 13, 23);
-						break;
-
-					}
-
-				}
-			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & SW1) != 0) {
-				if (numOfFlags < NUMOFMINES) {
-
-					int x = (startX - 80) / 16;
-					int y = (startY - 80) / 16;
-					if (blankMap[x][y] == FLAG) {
-						drawMap(80, 16, startX - 1, startY - 1, 16, 16);
-
-						blankMap[x][y] = BEG;
-
-						numOfFlags++;
-
-						if (solvedMap[x][y] == BOMB) {
-							flagTrue--;
-						}
-
-						switch (numOfFlags) {
-						case 9:
-							drawMap(116, 32, 168, 54, 13, 23);
-							break;
-						case 8:
-							drawMap(103, 32, 168, 54, 13, 23);
-							break;
-						case 7:
-							drawMap(90, 32, 168, 54, 13, 23);
-							break;
-						case 6:
-							drawMap(77, 32, 168, 54, 13, 23);
-							break;
-						case 5:
-							drawMap(64, 32, 168, 54, 13, 23);
-							break;
-						case 4:
-							drawMap(51, 32, 168, 54, 13, 23);
-							break;
-						case 3:
-							drawMap(38, 32, 168, 54, 13, 23);
-							break;
-						case 2:
-							drawMap(25, 32, 168, 54, 13, 23);
-							break;
-						case 1:
-							drawMap(13, 32, 168, 54, 13, 23);
-							break;
-						case 0:
-							drawMap(0, 32, 168, 54, 13, 23);
-							break;
-						}
-					}
-				}
-
-			}*/ else {
+			 else {
 				btn_state = NOTHING_PRESSED;
 			}
 		} else { // SOMETHING_PRESSED
@@ -683,8 +545,6 @@ int main() {
 
 
 	init_platform();
-
-
 
 
 	VGA_PERIPH_MEM_mWriteMemory(
@@ -722,7 +582,6 @@ int main() {
 	}
 
 
-	// nas pokusaj pravljenja mape - relativno uspjesan, napravili smo mapu sa tri nivoa
 
 	makeTable();
 

@@ -51,28 +51,151 @@
 #define CENTER 0b00010000
 #define SW0 0b00000001
 #define SW1 0b00000010
+#define BOMB '*'
+#define NUM1 '1'
+#define NUM2 '2'
+#define NUM3 '3'
+#define NUM4 '4'
+#define BLANK '0'
+#define FLAG '#'
 #define NUMOFMINES 9
 #define NUMOFSPRITES 37
 
 //BEG---unpened field
 #define BEG '@'
 
-
+int endOfGame;
 int inc1;
 int inc2;
 int i, x, y, ii, oi, R, G, B, RGB, kolona, red, RGBgray;
-
+int numOfFlags;
+int flagTrue;
+int randomCounter = 50;
+int numOfMines;
+int firstTimeCenter;
+//map that is hidden from the user-it contains the solution
+char solvedMap[9][9];
+//map that has all of player's moves
+char blankMap[9][9];
+//map used for opening the blank fields that surround blank field selected
+char indicationMap[9][9];
 
 int randomMap[3][8][10];
 
+//end of game
+void printOutEndOfGame(char blankTable[SIZE][SIZE], char solvedMap[SIZE][SIZE]) {
+	int i, j, ii, jj;
+	for (i = 0; i < SIZE; i++) {
+		for (j = 0; j < SIZE; j++) {
+			ii = (i * 16) + 80;
+			jj = (j * 16) + 80;
+			if (blankTable[i][j] == FLAG) {
+				if (solvedMap[i][j] != BOMB) {
+					drawMap(16, 16, ii, jj, 16, 16);
+				}
+			} else if (blankTable[i][j] != FLAG && solvedMap[i][j] == BOMB) {
+				drawMap(0, 16, ii, jj, 16, 16);
+			}
+		}
+	}
+}
 
+//when the blank field is pressed, open all blank fields around it
+
+void clean(int x, int y, char resultTable[SIZE][SIZE],
+		char indicationMap[SIZE][SIZE]) {
+	int i, j;
+
+	indicationMap[x][y] = 'x';
+
+	if (resultTable[x][y] == BLANK) {
+		for (i = x - 1; i <= x + 1; i++) {
+			for (j = y - 1; j <= y + 1; j++) {
+				if (i >= 0 && j >= 0 && i < 9 && j < 9 && !(x == i && y == j)) {
+					if (indicationMap[i][j] == BLANK) {
+						clean(i, j, resultTable, indicationMap);
+					}
+				}
+
+			}
+		}
+	}
+}
+
+//function for opening selected field
+
+void openField(int x, int y, char map[9][9]) {
+	int i, j;
+	int x1, y1;
+	x1 = (x - 80) / 16;
+	y1 = (y - 80) / 16;
+
+	switch (map[x1][y1]) {
+	case NUM1:
+		drawMap(16, 0, x - 1, y - 1, 16, 16);
+		if (map != blankMap)
+			blankMap[x1][y1] = NUM1;
+		break;
+
+	case NUM2:
+		drawMap(32, 0, x - 1, y - 1, 16, 16);
+		if (map != blankMap)
+			blankMap[x1][y1] = NUM2;
+		break;
+
+	case NUM3:
+		drawMap(48, 0, x - 1, y - 1, 16, 16);
+		if (map != blankMap)
+			blankMap[x1][y1] = NUM3;
+		break;
+
+	case BLANK:
+		drawMap(0, 0, x - 1, y - 1, 16, 16);
+		if (map != blankMap)
+			blankMap[x1][y1] = BLANK;
+		clean(x1, y1, solvedMap, indicationMap);
+		for (i = 0; i < 9; i++) {
+			for (j = 0; j < 9; j++) {
+				xil_printf("%c", indicationMap[i][j]);
+			}
+			xil_printf("\n");
+		}
+		break;
+
+	case NUM4:
+		drawMap(64, 0, x - 1, y - 1, 16, 16);
+		if (map != blankMap)
+			blankMap[x1][y1] = NUM4;
+		break;
+
+	case BOMB:
+		if (map != blankMap)
+			blankMap[x1][y1] = BOMB;
+		endOfGame = 1;
+		printOutEndOfGame(blankMap, solvedMap);
+		drawMap(32, 16, x - 1, y - 1, 16, 16);
+		drawMap(77, 54, 120, 54, 27, 26);
+		break;
+	case '@':
+		drawMap(80, 16, x - 1, y - 1, 16, 16);
+		if (map != blankMap)
+			blankMap[x1][y1] = BEG;
+		break;
+
+	case '#':
+		drawMap(64, 16, x - 1, y - 1, 16, 16);
+		if (map != blankMap)
+			blankMap[x1][y1] = FLAG;
+		break;
+	}
+}
 
 //function that generates random game map
 void makeTable() {
 	int numOfSprites, row, column, level, i, j, k, r, m;
 	int table[3][8][10];
 
-	srand(rand()%50);
+	srand(randomCounter);
 
 	//popunjava matricu sa -1
 	for (i = 0; i < 3; i++) {
@@ -109,6 +232,75 @@ void makeTable() {
 	}
 
 
+/*
+	//proverava poziciju mina i ispisuje brojeve na odg mesta
+	for (i = 0; i < 9; i++) {
+		for (j = 0; j < 9; j++) {
+			surroundingMines = 0;
+			if (table[i][j] != BOMB) {
+				if (i > 0 && j > 0) {
+					if (table[i - 1][j - 1] == BOMB)
+						surroundingMines++;
+				}
+				if (j > 0) {
+					if (table[i][j - 1] == BOMB)
+						surroundingMines++;
+				}
+				if (i < 9 - 1 && j > 0) {
+					if (table[i + 1][j - 1] == BOMB)
+						surroundingMines++;
+				}
+				if (i > 0) {
+					if (table[i - 1][j] == BOMB)
+						surroundingMines++;
+				}
+				if (i < 9 - 1) {
+					if (table[i + 1][j] == BOMB)
+						surroundingMines++;
+				}
+				if (i > 0 && j < 9 - 1) {
+					if (table[i - 1][j + 1] == BOMB)
+						surroundingMines++;
+				}
+				if (j < 9 - 1) {
+					if (table[i][j + 1] == BOMB)
+						surroundingMines++;
+				}
+				if (i < 9 - 1 && j < 9 - 1) {
+					if (table[i + 1][j + 1] == BOMB)
+						surroundingMines++;
+				}
+				table[i][j] = surroundingMines + '0';
+			}
+		}
+
+	}
+
+	//for testing
+
+	for (i = 0; i < 9; i++) {
+		for (j = 0; j < 9; j++) {
+			xil_printf("%c", table[i][j]);
+		}
+		xil_printf("\n");
+	}
+
+	for (i = 0; i < 9; i++) {
+		for (j = 0; j < 9; j++) {
+			temp[i][j] = table[j][i];
+
+		}
+	}
+
+	xil_printf("\n");
+
+	for (i = 0; i < 9; i++) {
+		for (j = 0; j < 9; j++) {
+			xil_printf("%c", temp[j][i]);
+		}
+		xil_printf("\n");
+	}
+*/
 }
 
 //extracting pixel data from a picture for printing out on the display
@@ -215,7 +407,7 @@ void move() {
 //	makeTable(solvedMap);
 	drawingCursor(startX, startY, endX, endY);
 
-	while (1) {
+	while (endOfGame != 1) {
 
 		if (btn_state == NOTHING_PRESSED) {
 			btn_state = SOMETHING_PRESSED;
@@ -281,6 +473,7 @@ void move() {
 			}
 
 			else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & RIGHT) == 0) {
+				randomCounter++;
 
 
 
@@ -417,6 +610,16 @@ void move() {
 				}
 
 			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & CENTER) == 0) {
+				//int m = (startX - 80) / 16;
+				//int n = (startY - 80) / 16;
+				//firstTimeCenter++;
+				//if (firstTimeCenter == 1) {
+					//randomCounter++;
+					//while (solvedMap[m][n] == BOMB)
+						//makeTable(solvedMap);
+				//}
+				//openField(startX, startY, solvedMap);
+
 
 				if(flag == 0){
 					if(randomMap[sadasnji_nivo][i][j-1] == -1 || randomMap[sadasnji_nivo][i][j+1] == -1 || j == 0 || j == 9){
@@ -680,12 +883,26 @@ int main() {
 	int j, p, r, i, k;
 	inc1 = 0;
 	inc2 = 0;
-
+	numOfFlags = NUMOFMINES;
+	flagTrue = 0;
+	numOfMines = NUMOFMINES;
+	firstTimeCenter = 0;
 
 	init_platform();
 
+	//helping map for cleaning the table when blank button is pressed
+	for (p = 0; p < SIZE; p++) {
+		for (r = 0; r < SIZE; r++) {
+			indicationMap[p][r] = BLANK;
+		}
+	}
 
-
+	//map which contains all the moves of the player
+	for (i = 0; i < 9; i++) {
+		for (j = 0; j < 9; j++) {
+			blankMap[i][j] = BEG;
+		}
+	}
 
 	VGA_PERIPH_MEM_mWriteMemory(
 			XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + 0x00, 0x0); // direct mode   0

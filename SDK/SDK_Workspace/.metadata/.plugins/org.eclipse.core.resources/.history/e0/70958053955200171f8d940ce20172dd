@@ -72,7 +72,7 @@ void makeTable() {
 	int numOfSprites, row, column, level, i, j, k, r, m;
 	int table[3][8][10];
 
-	srand(rand()%50);
+	srand(randomCounter);
 
 	//popunjava matricu sa -1
 	for (i = 0; i < 3; i++) {
@@ -215,7 +215,7 @@ void move() {
 //	makeTable(solvedMap);
 	drawingCursor(startX, startY, endX, endY);
 
-	while (1) {
+	while (endOfGame != 1) {
 
 		if (btn_state == NOTHING_PRESSED) {
 			btn_state = SOMETHING_PRESSED;
@@ -281,6 +281,7 @@ void move() {
 			}
 
 			else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & RIGHT) == 0) {
+				randomCounter++;
 
 
 
@@ -680,12 +681,26 @@ int main() {
 	int j, p, r, i, k;
 	inc1 = 0;
 	inc2 = 0;
-
+	numOfFlags = NUMOFMINES;
+	flagTrue = 0;
+	numOfMines = NUMOFMINES;
+	firstTimeCenter = 0;
 
 	init_platform();
 
+	//helping map for cleaning the table when blank button is pressed
+	for (p = 0; p < SIZE; p++) {
+		for (r = 0; r < SIZE; r++) {
+			indicationMap[p][r] = BLANK;
+		}
+	}
 
-
+	//map which contains all the moves of the player
+	for (i = 0; i < 9; i++) {
+		for (j = 0; j < 9; j++) {
+			blankMap[i][j] = BEG;
+		}
+	}
 
 	VGA_PERIPH_MEM_mWriteMemory(
 			XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + 0x00, 0x0); // direct mode   0
