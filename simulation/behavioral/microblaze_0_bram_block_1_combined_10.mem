@@ -1,0 +1,15 @@
+// Mem file initialization records.
+//
+// Release 14.6 - Data2MEM P.68d, build 3.0.10 Apr 3, 2013
+// Copyright (c) 1995-2018 Xilinx, Inc.  All rights reserved.
+//
+// Command: data2mem -bm system_sim.bmm -bd C:\Temp\133\project\MahjongProjekatLPRS2\bootloops\microblaze_0.elf tag microblaze_0 -bx C:\Temp\133\project\MahjongProjekatLPRS2\simulation\behavioral -u -p "xc6slx45fgg676-2"
+//
+// Created on Tuesday May 15, 2018 - 09:12:21 am, from:
+//
+//     Map file     - system_sim.bmm
+//     Data file(s) - C:\Temp\133\project\MahjongProjekatLPRS2\bootloops\microblaze_0.elf
+//
+// Address space 'microblaze_0.microblaze_0_bram_block_1_combined', bit lane [21:21].
+//
+// Bus width = 32 bits, number of bus blocks = 1.
