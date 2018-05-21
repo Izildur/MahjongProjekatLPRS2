@@ -192,10 +192,6 @@ void drawBlue(int startX, int endX, int startY, int endY){
 
 }
 
-void deleteBlue(int startX, int endX, int startY, int endY){
-
-}
-
 state_t detect_keypress() {
 	state_t state = IDLE;
 	int button = Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR);
@@ -483,7 +479,7 @@ void move() {
 														}
 													}
 
-												}
+												//}
 											}
 										}
 									}

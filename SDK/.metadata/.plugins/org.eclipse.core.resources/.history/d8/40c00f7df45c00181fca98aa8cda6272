@@ -192,10 +192,6 @@ void drawBlue(int startX, int endX, int startY, int endY){
 
 }
 
-void deleteBlue(int startX, int endX, int startY, int endY){
-
-}
-
 state_t detect_keypress() {
 	state_t state = IDLE;
 	int button = Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR);
@@ -449,15 +445,15 @@ void move() {
 
 									drawMap(randomMap[sadasnji_nivo][i+1][j]*20, 0, oldStartX, oldStartY, 20, 28);
 
-									int nova_pozicija = 0;
+									//int nova_pozicija = 0;
 
 									//postavljanje kursora na prvu gornju poziciju nakon brisanja nekih plocica
 									for (ii = 0; ii <= 2; ii++) {
 										for (jj = 0; jj < 8; jj++) {
 											for (k = 0; k < 10; k++){
-												if(nova_pozicija == 0) {
+												//if(nova_pozicija == 0) {
 													if (randomMap[ii][jj][k] != -1) {
-														nova_pozicija = 1;
+														//nova_pozicija = 1;
 														i = jj;
 														j = k;
 														sadasnji_nivo = ii;
@@ -483,7 +479,7 @@ void move() {
 														}
 													}
 
-												}
+												//}
 											}
 										}
 									}
@@ -518,17 +514,8 @@ void move() {
 
 												} else{
 
-
-
-
-
-
-
-
-
-
-
-
+													drawMap(randomMap[sadasnji_nivo][i+1][j]*20, 0, oldStartX, oldStartY, 20, 28);
+													drawingCursor(startX, startY, endX, endY);
 
 												}
 

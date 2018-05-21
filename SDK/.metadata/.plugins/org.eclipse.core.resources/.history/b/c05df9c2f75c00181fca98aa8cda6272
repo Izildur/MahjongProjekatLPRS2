@@ -192,10 +192,6 @@ void drawBlue(int startX, int endX, int startY, int endY){
 
 }
 
-void deleteBlue(int startX, int endX, int startY, int endY){
-
-}
-
 state_t detect_keypress() {
 	state_t state = IDLE;
 	int button = Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR);
@@ -523,7 +519,29 @@ void move() {
 
 
 
-
+													for (ii = 0; ii < 3; ii++) {
+																							for (jj = 0; jj < 8; jj++) {
+																								for (k = 0; k < 10; k++){
+																									if(randomMap[ii][jj][k] != -1){
+																										if( ii == 0){
+																											drawMap(randomMap[ii][jj][k]*20, 0, 60+k*20, 8+jj*28, 20, 28 );
+																										}else if(ii == 1){
+																												//if( jj > 0 && jj < 7 && k > 0 && k < 9){
+																													drawMap(randomMap[ii][jj][k]*20, 0, 60+k*20+2, 8+jj*28-3, 20, 28 );
+																												//}
+																										}else{
+																												//if( jj > 1 && jj < 6 && k > 1 && k < 8){
+																													drawMap(randomMap[ii][jj][k]*20, 0, 60+k*20+4, 8+jj*28-6, 20, 28 );
+																												//}
+																										}
+																									}else{
+																										if(ii == 0){
+																											drawBlue(60 + k*20, 60+ k*20+20, 8+jj*28, 8+jj*28+28);
+																										}
+																									}
+																								}
+																							}
+																						}
 
 
 

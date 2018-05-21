@@ -192,10 +192,6 @@ void drawBlue(int startX, int endX, int startY, int endY){
 
 }
 
-void deleteBlue(int startX, int endX, int startY, int endY){
-
-}
-
 state_t detect_keypress() {
 	state_t state = IDLE;
 	int button = Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR);
@@ -497,13 +493,13 @@ void move() {
 													if( ii == 0){
 														drawMap(randomMap[ii][jj][k]*20, 0, 60+k*20, 8+jj*28, 20, 28 );
 													}else if(ii == 1){
-															//if( jj > 0 && jj < 7 && k > 0 && k < 9){
+															if( jj > 0 && jj < 7 && k > 0 && k < 9){
 																drawMap(randomMap[ii][jj][k]*20, 0, 60+k*20+2, 8+jj*28-3, 20, 28 );
-															//}
+															}
 													}else{
-															//if( jj > 1 && jj < 6 && k > 1 && k < 8){
+															if( jj > 1 && jj < 6 && k > 1 && k < 8){
 																drawMap(randomMap[ii][jj][k]*20, 0, 60+k*20+4, 8+jj*28-6, 20, 28 );
-															//}
+															}
 													}
 												}else{
 													if(ii == 0){
@@ -514,23 +510,15 @@ void move() {
 										}
 									}
 
+
 									drawingCursor(startX, startY, endX, endY);
 
-												} else{
+												} /*else{
 
+													drawMap(randomMap[sadasnji_nivo][i+1][j]*20, 0, oldStartX, oldStartY, 20, 28);
+													drawingCursor(startX, startY, endX, endY);
 
-
-
-
-
-
-
-
-
-
-
-
-												}
+												}*/
 
 
 											}

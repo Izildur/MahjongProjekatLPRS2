@@ -192,10 +192,6 @@ void drawBlue(int startX, int endX, int startY, int endY){
 
 }
 
-void deleteBlue(int startX, int endX, int startY, int endY){
-
-}
-
 state_t detect_keypress() {
 	state_t state = IDLE;
 	int button = Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR);
@@ -449,15 +445,15 @@ void move() {
 
 									drawMap(randomMap[sadasnji_nivo][i+1][j]*20, 0, oldStartX, oldStartY, 20, 28);
 
-									int nova_pozicija = 0;
+									//int nova_pozicija = 0;
 
 									//postavljanje kursora na prvu gornju poziciju nakon brisanja nekih plocica
 									for (ii = 0; ii <= 2; ii++) {
 										for (jj = 0; jj < 8; jj++) {
 											for (k = 0; k < 10; k++){
-												if(nova_pozicija == 0) {
+												//if(nova_pozicija == 0) {
 													if (randomMap[ii][jj][k] != -1) {
-														nova_pozicija = 1;
+														//nova_pozicija = 1;
 														i = jj;
 														j = k;
 														sadasnji_nivo = ii;
@@ -483,7 +479,7 @@ void move() {
 														}
 													}
 
-												}
+												//}
 											}
 										}
 									}
@@ -519,9 +515,82 @@ void move() {
 												} else{
 
 
+													int m = 0;
 
+													if(m == 0){
 
+													randomMap[sadasnji_nivo][i][j] = -1;
+																						randomMap[flagVisina][flagX][flagY] = -1;
+																						flag = 0;
 
+																						drawMap(randomMap[sadasnji_nivo][i+1][j]*20, 0, oldStartX, oldStartY, 20, 28);
+
+																						//int nova_pozicija = 0;
+
+																						//postavljanje kursora na prvu gornju poziciju nakon brisanja nekih plocica
+																						for (ii = 0; ii <= 2; ii++) {
+																							for (jj = 0; jj < 8; jj++) {
+																								for (k = 0; k < 10; k++){
+																									//if(nova_pozicija == 0) {
+																										if (randomMap[ii][jj][k] != -1) {
+																											//nova_pozicija = 1;
+																											i = jj;
+																											j = k;
+																											sadasnji_nivo = ii;
+
+																											//int startX = 60, startY = 8, endX = 80, endY = 36;
+																											if (sadasnji_nivo == 0) {
+																												startX = 60 + j*20;
+																												startY = 8 + i*28;
+																												endX = 60 + j*20 + 20;
+																												endY = 8 + i*28 + 28;
+
+																											} else if (sadasnji_nivo == 1) {
+																												startX = 60 + j*20 + 2;
+																												startY = 8 + i*28 - 3;
+																												endX = 60 + j*20 + 20 + 2;
+																												endY = 8 + i*28 + 28 - 3;
+																											} else if (sadasnji_nivo == 2) {
+																												startX = 60 + j*20 + 4;
+																												startY = 8 + i*28 - 6;
+																												endX = 60 + j*20 + 20 + 4;
+																												endY = 8 + i*28 + 28 - 6;
+
+																											}
+																										}
+
+																									//}
+																								}
+																							}
+																						}
+
+																						//drawMap(randomMap[flagVisina][flagX][flagY]*20,0,oldStartX,oldStartY, 20, 28);
+
+																						for (ii = 0; ii < 3; ii++) {
+																							for (jj = 0; jj < 8; jj++) {
+																								for (k = 0; k < 10; k++){
+																									if(randomMap[ii][jj][k] != -1){
+																										if( ii == 0){
+																											drawMap(randomMap[ii][jj][k]*20, 0, 60+k*20, 8+jj*28, 20, 28 );
+																										}else if(ii == 1){
+																												//if( jj > 0 && jj < 7 && k > 0 && k < 9){
+																													drawMap(randomMap[ii][jj][k]*20, 0, 60+k*20+2, 8+jj*28-3, 20, 28 );
+																												//}
+																										}else{
+																												//if( jj > 1 && jj < 6 && k > 1 && k < 8){
+																													drawMap(randomMap[ii][jj][k]*20, 0, 60+k*20+4, 8+jj*28-6, 20, 28 );
+																												//}
+																										}
+																									}else{
+																										if(ii == 0){
+																											drawBlue(60 + k*20, 60+ k*20+20, 8+jj*28, 8+jj*28+28);
+																										}
+																									}
+																								}
+																							}
+																						}
+
+																						drawingCursor(startX, startY, endX, endY);
 
 
 
@@ -531,7 +600,7 @@ void move() {
 
 
 												}
-
+												}
 
 											}
 										}
