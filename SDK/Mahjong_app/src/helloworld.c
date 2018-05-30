@@ -56,6 +56,7 @@
 
 int q, x, y, ii, oi, R, G, B, RGB, kolona, red, RGBgray;
 int cX = 0, cY = 0, cL = 0;
+int sX = 60, eX = 80, sY = 8, eY = 36;
 
 int randomMap[3][8][10];
 
@@ -262,30 +263,46 @@ int calculate_level(int i, int j, state_t state){
 
 }
 
-void calculate_coordinates(state_t state){
+
+void calculate_coordinates(state_t state, int razlika){
 
 	switch(state){
 
 		case DOWN_PRESSED:
-			cY++;
+			cX++;
+			sX += cX*28 - razlika*2;
+			eX = sX + 28 - razlika*2;
+			sY = sY + razlika*3;
+			eY = eY + razlika*3;
 		break;
 
 		case UP_PRESSED:
-			cY--;
+			cX--;
+			sX -= cX*28 - razlika*2;
+			eX = sX + 28 - razlika*2;
+			sY = sY + razlika*3;
+			eY = eY + razlika*3;
 		break;
 
 		case LEFT_PRESSED:
-			cX--;
+			cY--;
+			sX = sX - razlika*2;
+			eX = eX - razlika*2;
+			sY -= cY*20 + razlika*3;
+			eY = eY + 20 + razlika*3;
 		break;
 
 		case RIGHT_PRESSED:
-			cX++;
+			cY++;
+			sX = sX - razlika*2;
+			eX = eX - razlika*2;
+			sY += cY*20 + razlika*3;
+			eY = sY + 20 + razlika*3;
 		break;
 
 		default:
 		break;
 	}
-
 }
 
 void drawingCursor2(int j, int k) {
@@ -318,18 +335,18 @@ state_t detect_keypress() {
 
 //function that controls switches and buttons
 void move() {
-	int startX = 60, startY = 8, endX = 80, endY = 36;	//cursor start, end, coordinates
+	//int startX = 60, startY = 8, endX = 80, endY = 36;	//cursor start, end, coordinates
 	int oldStartX, oldStartY, oldEndX, oldEndY;
 	int sadasnji_nivo, sledeci_nivo, razlika;
-	int i = 0, j = 0, ii, jj, k;
+	int ii, jj, k;
 	int flagX = -1, flagY = -1, flagVisina = -1, flag = 0, flagForCursor = 0;
 	state_t prethodno_stanje = IDLE, sledece_stanje = IDLE;
 
-	drawingCursor(startX, startY, endX, endY);
+	drawingCursor(sX, sY, eX, eY);
 
 	while(1){
 
-		sadasnji_nivo = calculate_level(i, j, IDLE);
+		sadasnji_nivo = calculate_level(cX, cY, IDLE);
 
 		prethodno_stanje = sledece_stanje;
 		sledece_stanje = detect_keypress();
@@ -342,34 +359,36 @@ void move() {
 			switch(sledece_stanje){
 
 				case DOWN_PRESSED:
-					if (endY < 213) {
+					if (eX < 213) {
 
-						sledeci_nivo = calculate_level(i, j, sledece_stanje);
+						sledeci_nivo = calculate_level(cX, cY, sledece_stanje);
 
 						razlika = sadasnji_nivo - sledeci_nivo;
 
-						i = i + 1;
+						//cX = cX + 1;
 
-						oldStartX = startX;
-						oldStartY = startY;
-						oldEndY = endY;
-						oldEndX = endX;
-						startY += 28;
-						endY += 28;
-						//calculate_coordinates(sledece_stanje); //ovde koordinate el matrice
+						oldStartX = sY;
+						oldStartY = sX;
+						oldEndY = eX;
+						oldEndX = eY;
+						/*startY += 28;
+						endY += 28;*/
 
-						startX = startX -(razlika*(2));
+						calculate_coordinates(sledece_stanje, razlika); //ovde koordinate el matrice
+
+						/*startX = startX -(razlika*(2));
 						startY = startY +(razlika*(3));
 						endX = endX-(razlika*(2));
-						endY = endY+(razlika*(3));
+						endY = endY+(razlika*(3));*/
 
-						drawingCursor(startX, startY, endX, endY);
+						//drawingCursor(startX, startY, endX, endY);
+						drawingCursor(sX, sY, eX, eY);
 
 						if(flagForCursor == 0){
-							if(sadasnji_nivo == 0 && randomMap[sadasnji_nivo][i-1][j] == -1){
+							if(sadasnji_nivo == 0 && randomMap[sadasnji_nivo][cX-1][cY] == -1){
 								drawBlue(oldStartX, oldEndX, oldStartY, oldEndY);
 							}else{
-								drawMap(randomMap[sadasnji_nivo][i-1][j]*20, 0, oldStartX, oldStartY, 20, 28);
+								drawMap(randomMap[sadasnji_nivo][cX-1][cY]*20, 0, oldStartX, oldStartY, 20, 28);
 							}
 						}else{
 							flagForCursor = 0;
@@ -380,33 +399,35 @@ void move() {
 				break;
 
 				case UP_PRESSED:
-					if (startY > 27) {
+					if (sX > 27) {
 
-						sledeci_nivo = calculate_level(i, j, sledece_stanje);
+						sledeci_nivo = calculate_level(cX, cY, sledece_stanje);
 
 						razlika = sadasnji_nivo - sledeci_nivo;
 
-						i = i - 1;
+						//cX = cX - 1;
 
-						oldStartX = startX;
-						oldStartY = startY;
-						oldEndY = endY;
-						oldEndX = endX;
-						startY -= 28;
-						endY -= 28;
+						oldStartX = sY;
+						oldStartY = sX;
+						oldEndY = eX;
+						oldEndX = eY;
+						/*startY -= 28;
+						endY -= 28;*/
 
-						startX = startX -(razlika*(2));
+						calculate_coordinates(sledece_stanje, razlika); //ovde koordinate el matrice
+
+						/*startX = startX -(razlika*(2));
 						startY = startY +(razlika*(3));
 						endX = endX-(razlika*(2));
-						endY = endY+(razlika*(3));
+						endY = endY+(razlika*(3));*/
 
-						drawingCursor(startX, startY, endX, endY);
+						drawingCursor(sX, sY, eX, eY);
 
 						if(flagForCursor == 0){
-							if(sadasnji_nivo == 0 && randomMap[sadasnji_nivo][i+1][j] == -1){
+							if(sadasnji_nivo == 0 && randomMap[sadasnji_nivo][cX+1][cY] == -1){
 								drawBlue(oldStartX, oldEndX, oldStartY, oldEndY);
 							} else{
-								drawMap(randomMap[sadasnji_nivo][i+1][j]*20,0,oldStartX,oldStartY, 20, 28 );
+								drawMap(randomMap[sadasnji_nivo][cX+1][cY]*20,0,oldStartX,oldStartY, 20, 28);
 							}
 						} else{
 								flagForCursor = 0;
@@ -419,31 +440,35 @@ void move() {
 
 				case LEFT_PRESSED:
 
-					if (startX > 79) {
+					if (sY > 79) {
 
-						sledeci_nivo = calculate_level(i, j, sledece_stanje);
+						sledeci_nivo = calculate_level(cX, cY, sledece_stanje);
 
 						razlika = sadasnji_nivo - sledeci_nivo;
 
-						j = j - 1;
+						//cY = cY - 1;
 
-						oldStartX = startX;
-						oldStartY = startY;
-						oldEndY = endY;
-						oldEndX = endX;
-						startX -= 20;
-						endX -= 20;
-						startX = startX -(razlika*(2));
+						oldStartX = sY;
+						oldStartY = sX;
+						oldEndY = eX;
+						oldEndX = eY;
+						//startX -= 20;
+						//endX -= 20;
+
+						calculate_coordinates(sledece_stanje, razlika); //ovde koordinate el matrice
+
+						/*startX = startX -(razlika*(2));
 						startY = startY +(razlika*(3));
 						endX = endX-(razlika*(2));
-						endY = endY+(razlika*(3));
+						endY = endY+(razlika*(3));*/
 
-						drawingCursor(startX, startY, endX, endY);
+						drawingCursor(sX, sY, eX, eY);
+
 						if(flagForCursor == 0){
-							if(sadasnji_nivo == 0 && randomMap[sadasnji_nivo][i][j+1] == -1){
+							if(sadasnji_nivo == 0 && randomMap[sadasnji_nivo][cX][cY+1] == -1){
 								drawBlue(oldStartX, oldEndX, oldStartY, oldEndY);
 							}else{
-								drawMap(randomMap[sadasnji_nivo][i][j+1]*20, 0, oldStartX, oldStartY, 20, 28 );
+								drawMap(randomMap[sadasnji_nivo][cX][cY+1]*20, 0, oldStartX, oldStartY, 20, 28 );
 							}
 						}else{
 							flagForCursor = 0;
@@ -455,32 +480,35 @@ void move() {
 
 				case RIGHT_PRESSED:
 
-					if (endX < 251) {
+					if(eY < 251) {
 
-						sledeci_nivo = calculate_level(i, j, sledece_stanje);
+						sledeci_nivo = calculate_level(cX, cY, sledece_stanje);
 
 						razlika = sadasnji_nivo - sledeci_nivo;
 
-						j = j + 1;
+						//cY = cY + 1;
 
-						oldStartX = startX;
-						oldStartY = startY;
-						oldEndY = endY;
-						oldEndX = endX;
-						startX += 20;
-						endX += 20;
-						startX = startX -(razlika*(2));
+						oldStartX = sY;
+						oldStartY = sX;
+						oldEndY = eX;
+						oldEndX = eY;
+						//startX += 20;
+						//endX += 20;
+
+						calculate_coordinates(sledece_stanje, razlika); //ovde koordinate el matrice
+
+						/*startX = startX -(razlika*(2));
 						startY = startY +(razlika*(3));
 						endX = endX-(razlika*(2));
-						endY = endY+(razlika*(3));
+						endY = endY+(razlika*(3));*/
 
-						drawingCursor(startX, startY, endX, endY);
+						drawingCursor(sX, sY, eX, eY);
 
 						if(flagForCursor == 0){
-							if(sadasnji_nivo == 0 && randomMap[sadasnji_nivo][i][j-1] == -1){
+							if(sadasnji_nivo == 0 && randomMap[sadasnji_nivo][cX][cY-1] == -1){
 								drawBlue(oldStartX, oldEndX, oldStartY, oldEndY);
 							}else{
-								drawMap(randomMap[sadasnji_nivo][i][j-1]*20, 0, oldStartX, oldStartY, 20, 28 );
+								drawMap(randomMap[sadasnji_nivo][cX][cY-1]*20, 0, oldStartX, oldStartY, 20, 28 );
 							}
 						}else{
 							flagForCursor = 0;
@@ -493,24 +521,24 @@ void move() {
 
 				case CENTER_PRESSED:
 					if(flag == 0){ // nije selektovano
-											if(randomMap[sadasnji_nivo][i][j-1] == -1 || randomMap[sadasnji_nivo][i][j+1] == -1 || j == 0 || j == 9){ //da li moze da se selektuje(slobodne bocne ivice)
-												if(randomMap[sadasnji_nivo][i][j] != -1){
-													flagX = i;
-													flagY = j;
+											if(randomMap[sadasnji_nivo][cX][cY-1] == -1 || randomMap[sadasnji_nivo][cX][cY+1] == -1 || cY == 0 || cY == 9){ //da li moze da se selektuje(slobodne bocne ivice)
+												if(randomMap[sadasnji_nivo][cX][cY] != -1){
+													flagX = cX;
+													flagY = cY;
 													flagVisina = sadasnji_nivo;
 													flagForCursor = 1;
 													flag = 1;
 												}
 											}
 										}else if(flag == 1){
-											if(randomMap[sadasnji_nivo][i][j-1] == -1 || randomMap[sadasnji_nivo][i][j+1] == -1 || j == 0 || j == 9){
-												if(randomMap[sadasnji_nivo][i][j] == randomMap[flagVisina][flagX][flagY]){ //da li su selektovana dva ista
-													if(sadasnji_nivo != flagVisina || i != flagX || j != flagY){ //da li selektujemo samog sebe
-														randomMap[sadasnji_nivo][i][j] = -1;
+											if(randomMap[sadasnji_nivo][cX][cY-1] == -1 || randomMap[sadasnji_nivo][cX][cY+1] == -1 || cY == 0 || cY == 9){
+												if(randomMap[sadasnji_nivo][cX][cY] == randomMap[flagVisina][flagX][flagY]){ //da li su selektovana dva ista
+													if(sadasnji_nivo != flagVisina || cX != flagX || cY != flagY){ //da li selektujemo samog sebe
+														randomMap[sadasnji_nivo][cX][cY] = -1;
 														randomMap[flagVisina][flagX][flagY] = -1;
 														flag = 0;
 
-														drawMap(randomMap[sadasnji_nivo][i+1][j]*20, 0, oldStartX, oldStartY, 20, 28);
+														drawMap(randomMap[sadasnji_nivo][cX+1][cY]*20, 0, oldStartX, oldStartY, 20, 28);
 
 														int nova_pozicija = 0;
 
@@ -521,28 +549,28 @@ void move() {
 																	if(nova_pozicija == 0) {
 																		if (randomMap[ii][jj][k] != -1) {
 																			nova_pozicija = 1;
-																			i = jj;
-																			j = k;
+																			cX = jj;
+																			cY = k;
 																			sadasnji_nivo = ii;
 
 																			//int startX = 60, startY = 8, endX = 80, endY = 36;
 
 																			if (sadasnji_nivo == 0) {
-																				startX = 60 + j*20;
-																				startY = 8 + i*28;
-																				endX = 60 + j*20 + 20;
-																				endY = 8 + i*28 + 28;
+																				sY = 60 + cY*20;
+																				sX = 8 + cX*28;
+																				eY = 60 + cY*20 + 20;
+																				eX = 8 + cX*28 + 28;
 
 																			} else if (sadasnji_nivo == 1) {
-																				startX = 60 + j*20 + 2;
-																				startY = 8 + i*28 - 3;
-																				endX = 60 + j*20 + 20 + 2;
-																				endY = 8 + i*28 + 28 - 3;
+																				sY = 60 + cY*20 + 2;
+																				sX = 8 + cX*28 - 3;
+																				eY = 60 + cY*20 + 20 + 2;
+																				eX = 8 + cX*28 + 28 - 3;
 																			} else {
-																				startX = 60 + j*20 + 4;
-																				startY = 8 + i*28 - 6;
-																				endX = 60 + j*20 + 20 + 4;
-																				endY = 8 + i*28 + 28 - 6;
+																				sY = 60 + cY*20 + 4;
+																				sX = 8 + cX*28 - 6;
+																				eY = 60 + cY*20 + 20 + 4;
+																				eX = 8 + cX*28 + 28 - 6;
 
 																			}
 																		}
@@ -580,7 +608,7 @@ void move() {
 															}
 														}
 
-														drawingCursor(startX, startY, endX, endY);
+														drawingCursor(sX, sY, eX, eY);
 
 																	} else{
 
