@@ -54,9 +54,8 @@
 //BEG---unpened field
 #define BEG '@'
 
-int inc1;
-int inc2;
-int i, x, y, ii, oi, R, G, B, RGB, kolona, red, RGBgray;
+int q, x, y, ii, oi, R, G, B, RGB, kolona, red, RGBgray;
+int cX = 0, cY = 0, cL = 0;
 
 int randomMap[3][8][10];
 
@@ -69,11 +68,6 @@ typedef enum {
 	UP_PRESSED
 } state_t;
 
-typedef enum {
-	SELECTED,
-	UNSELECTED
-} state_s;
-
 //function that generates random game map
 void makeTable() {
 	int numOfSprites, row, column, level, i, j, k, r;
@@ -85,8 +79,6 @@ void makeTable() {
 			randomMap[i][j][k] = -1;
 		}
 	}
-
-	//srand(rand()%50);
 
 	//postavlja random karata
 	for(r = 0; r < 4; r++){
@@ -117,9 +109,8 @@ void makeTable() {
 }
 
 //extracting pixel data from a picture for printing out on the display
-void drawMap(int in_x, int in_y, int out_x, int out_y, int width, int height, int nivo) {
+void drawMap(int in_x, int in_y, int out_x, int out_y, int width, int height) {
 	int ox, oy, oi, iy, ix, ii;
-	int i, j;
 	for (y = 0; y < height; y++) {
 		for (x = 0; x < width; x++) {
 			ox = out_x + x;
@@ -138,39 +129,12 @@ void drawMap(int in_x, int in_y, int out_x, int out_y, int width, int height, in
 			G <<= 3;
 			RGB = R | G | B;
 
-			if(in_x >= 80 && in_x <= 340 && in_y >= 36 && in_y <= 168){
-				for(i = -20; i <= 20; i+=20){
-					for(j = -28; j <= -28; j+=28){
-
-						if(randomMap[nivo + 1][in_x + i][in_y + j] != -1){
-
-							VGA_PERIPH_MEM_mWriteMemory(
-												XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
-														+ ((in_y + j)*320 + in_x+i) * 4, RGB);
-
-						}
-
-					}
-				}
-			} else{
-
-				VGA_PERIPH_MEM_mWriteMemory(
-									XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
-											+ oi * 4, RGB);
-
-			}
-
-
+			VGA_PERIPH_MEM_mWriteMemory(
+					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
+							+ oi * 4, RGB);
 		}
 	}
 
-}
-
-void drawMap2(int i, int j, int k){
-	if(randomMap[i][j][k] != -1){
-		drawMap(randomMap[i][j][k] * 20, 0, 60 + k * 20 + 2*i,
-				8 + j * 28 -3*i, 20, 28, i);
-	}
 }
 
 //drawing cursor for indicating position
@@ -178,49 +142,149 @@ void drawingCursor(int startX, int startY, int endX, int endY) {
 
 	for (x = startX; x < endX; x++) {
 		for (y = startY; y < startY + 2; y++) {
-			i = y * 320 + x;
+			q = y * 320 + x;
 			VGA_PERIPH_MEM_mWriteMemory(
 					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
-							+ i * 4, 0x000055);
+							+ q * 4, 0x000055);
 		}
 	}
 
 	for (x = startX; x < endX; x++) {
 		for (y = endY - 2; y < endY; y++) {
-			i = y * 320 + x;
+			q = y * 320 + x;
 			VGA_PERIPH_MEM_mWriteMemory(
 					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
-							+ i * 4, 0x000055);
+							+ q * 4, 0x000055);
 		}
 	}
 
 	for (x = startX; x < startX + 2; x++) {
 		for (y = startY; y < endY; y++) {
-			i = y * 320 + x;
+			q = y * 320 + x;
 			VGA_PERIPH_MEM_mWriteMemory(
 					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
-							+ i * 4, 0x000055);
+							+ q * 4, 0x000055);
 		}
 	}
 
 	for (x = endX - 2; x < endX; x++) {
 		for (y = startY; y < endY; y++) {
-			i = y * 320 + x;
+			q = y * 320 + x;
 			VGA_PERIPH_MEM_mWriteMemory(
 					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
-							+ i * 4, 0x000055);
+							+ q * 4, 0x000055);
 		}
 	}
 
 }
 
-void calculate_coordinates(int startX, int endX, int startY, int endY){
+void drawBlue(int startX, int endX, int startY, int endY){
 
-	startX += 20;
-	endX += 20;
-	startY += 28;
-	endY += 28;
-	//printf("%d", startX, "%d", endX, "%d", startY, "%d", endY);
+	for (x = startX; x < endX; x++) {
+		for (y = startY; y < endY; y++) {
+			q = y * 320 + x;
+			VGA_PERIPH_MEM_mWriteMemory(
+			XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
+			+ q * 4, 0x000000);
+		}
+	}
+
+}
+
+int calculate_level(int i, int j, state_t state){
+
+	int sledeci_nivo = 0;
+
+	switch(state){
+
+		case DOWN_PRESSED:
+			if(randomMap[0][i+1][j] != -1){
+				sledeci_nivo = 0;
+			}
+			if(randomMap[1][i+1][j] != -1){
+				sledeci_nivo = 1;
+			}
+			if(randomMap[2][i+1][j] != -1){
+				sledeci_nivo = 2;
+			}
+		break;
+
+		case UP_PRESSED:
+			if(randomMap[0][i-1][j] != -1){
+				sledeci_nivo = 0;
+			}
+			if(randomMap[1][i-1][j] != -1){
+				sledeci_nivo = 1;
+			}
+			if(randomMap[2][i-1][j] != -1){
+				sledeci_nivo = 2;
+			}
+		break;
+
+		case RIGHT_PRESSED:
+			if(randomMap[0][i][j+1] != -1){
+				sledeci_nivo = 0;
+			}
+			if(randomMap[1][i][j+1] != -1){
+				sledeci_nivo = 1;
+			}
+			if(randomMap[2][i][j+1] != -1){
+				sledeci_nivo = 2;
+			}
+		break;
+
+		case LEFT_PRESSED:
+			if(randomMap[0][i][j-1] != -1){
+				sledeci_nivo = 0;
+			}
+			if(randomMap[1][i][j-1] != -1){
+				sledeci_nivo = 1;
+			}
+			if(randomMap[2][i][j-1] != -1){
+				sledeci_nivo = 2;
+			}
+		break;
+
+		default:
+			if(randomMap[0][i][j] != -1){
+				sledeci_nivo = 0;
+			}
+			if(randomMap[1][i][j] != -1){
+				sledeci_nivo = 1;
+			}
+			if(randomMap[2][i][j] != -1){
+				sledeci_nivo = 2;
+			}
+			break;
+	}
+
+	return sledeci_nivo;
+
+}
+
+void calculate_coordinates(state_t state){
+
+	switch(state){
+
+		case DOWN_PRESSED:
+			cY++;
+		break;
+
+		case UP_PRESSED:
+			cY--;
+		break;
+
+		case LEFT_PRESSED:
+			cX--;
+		break;
+
+		case RIGHT_PRESSED:
+			cX++;
+		break;
+
+		default:
+		break;
+	}
 
 }
 
@@ -231,20 +295,6 @@ void drawingCursor2(int j, int k) {
 	int startX = 60, startY = 8, endX = 80, endY = 36;
 	drawingCursor(startX, startY, endX, endY);
 }
-
-void drawBlue(int startX, int endX, int startY, int endY){
-
-	for (x = startX; x < endX; x++) {
-		for (y = startY; y < endY; y++) {
-			i = y * 320 + x;
-			VGA_PERIPH_MEM_mWriteMemory(
-			XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
-			+ i * 4, 0x000000);
-		}
-	}
-
-}
-
 
 state_t detect_keypress() {
 	state_t state = IDLE;
@@ -275,20 +325,11 @@ void move() {
 	int flagX = -1, flagY = -1, flagVisina = -1, flag = 0, flagForCursor = 0;
 	state_t prethodno_stanje = IDLE, sledece_stanje = IDLE;
 
-	//drawingCursor(startX, startY, endX, endY);
-	drawingCursor2(0, 0);
+	drawingCursor(startX, startY, endX, endY);
 
 	while(1){
 
-		if(randomMap[0][i][j] != -1){
-			sadasnji_nivo = 0;
-		}
-		if(randomMap[1][i][j] != -1){
-			sadasnji_nivo = 1;
-		}
-		if(randomMap[2][i][j] != -1){
-			sadasnji_nivo = 2;
-		}
+		sadasnji_nivo = calculate_level(i, j, IDLE);
 
 		prethodno_stanje = sledece_stanje;
 		sledece_stanje = detect_keypress();
@@ -303,45 +344,32 @@ void move() {
 				case DOWN_PRESSED:
 					if (endY < 213) {
 
-						if(randomMap[0][i+1][j] != -1){
-							sledeci_nivo = 0;
-						}
-						if(randomMap[1][i+1][j] != -1){
-							sledeci_nivo = 1;
-						}
-						if(randomMap[2][i+1][j] != -1){
-							sledeci_nivo = 2;
-						}
-
+						sledeci_nivo = calculate_level(i, j, sledece_stanje);
 
 						razlika = sadasnji_nivo - sledeci_nivo;
 
 						i = i + 1;
 
-						/*oldStartX = startX;
+						oldStartX = startX;
 						oldStartY = startY;
 						oldEndY = endY;
 						oldEndX = endX;
 						startY += 28;
-						endY += 28;*/
-
-						drawingCursor(startX, startY, endX, endY);
-						calculate_coordinates(startX, endX, startY, endY);
+						endY += 28;
+						//calculate_coordinates(sledece_stanje); //ovde koordinate el matrice
 
 						startX = startX -(razlika*(2));
 						startY = startY +(razlika*(3));
 						endX = endX-(razlika*(2));
 						endY = endY+(razlika*(3));
 
-
+						drawingCursor(startX, startY, endX, endY);
 
 						if(flagForCursor == 0){
 							if(sadasnji_nivo == 0 && randomMap[sadasnji_nivo][i-1][j] == -1){
-								//drawBlue(oldStartX, oldEndX, oldStartY, oldEndY);
-								drawBlue(startX, endX, startY, endY);
+								drawBlue(oldStartX, oldEndX, oldStartY, oldEndY);
 							}else{
-								//drawMap(randomMap[sadasnji_nivo][i-1][j]*20, 0, oldStartX, oldStartY, 20, 28, sadasnji_nivo);
-								drawMap(randomMap[sadasnji_nivo][i-1][j]*20, 0, startX, startY, 20, 28, sadasnji_nivo);
+								drawMap(randomMap[sadasnji_nivo][i-1][j]*20, 0, oldStartX, oldStartY, 20, 28);
 							}
 						}else{
 							flagForCursor = 0;
@@ -354,44 +382,31 @@ void move() {
 				case UP_PRESSED:
 					if (startY > 27) {
 
-						if(randomMap[0][i-1][j] != -1){
-							sledeci_nivo = 0;
-						}
-						if(randomMap[1][i-1][j] != -1){
-							sledeci_nivo = 1;
-						}
-						if(randomMap[2][i-1][j] != -1){
-							sledeci_nivo = 2;
-						}
-
+						sledeci_nivo = calculate_level(i, j, sledece_stanje);
 
 						razlika = sadasnji_nivo - sledeci_nivo;
 
 						i = i - 1;
 
-						/*oldStartX = startX;
+						oldStartX = startX;
 						oldStartY = startY;
 						oldEndY = endY;
 						oldEndX = endX;
 						startY -= 28;
-						endY -= 28;*/
-						drawingCursor(startX, startY, endX, endY);
-						calculate_coordinates(startX, endX, startY, endY);
+						endY -= 28;
 
 						startX = startX -(razlika*(2));
 						startY = startY +(razlika*(3));
 						endX = endX-(razlika*(2));
 						endY = endY+(razlika*(3));
 
-
+						drawingCursor(startX, startY, endX, endY);
 
 						if(flagForCursor == 0){
 							if(sadasnji_nivo == 0 && randomMap[sadasnji_nivo][i+1][j] == -1){
-								//drawBlue(oldStartX, oldEndX, oldStartY, oldEndY);
-								drawBlue(startX, endX, startY, endY);
+								drawBlue(oldStartX, oldEndX, oldStartY, oldEndY);
 							} else{
-								//drawMap(randomMap[sadasnji_nivo][i+1][j]*20,0,oldStartX,oldStartY, 20, 28, sadasnji_nivo);
-								drawMap(randomMap[sadasnji_nivo][i-1][j]*20, 0, startX, startY, 20, 28, sadasnji_nivo);
+								drawMap(randomMap[sadasnji_nivo][i+1][j]*20,0,oldStartX,oldStartY, 20, 28 );
 							}
 						} else{
 								flagForCursor = 0;
@@ -406,46 +421,29 @@ void move() {
 
 					if (startX > 79) {
 
-						//sledeci_nivo = 0;
-
-						if(randomMap[0][i][j-1] != -1){
-							sledeci_nivo = 0;
-						}
-						if(randomMap[1][i][j-1] != -1){
-							sledeci_nivo = 1;
-						}
-						if(randomMap[2][i][j-1] != -1){
-							sledeci_nivo = 2;
-						}
+						sledeci_nivo = calculate_level(i, j, sledece_stanje);
 
 						razlika = sadasnji_nivo - sledeci_nivo;
 
 						j = j - 1;
 
-						/*oldStartX = startX;
+						oldStartX = startX;
 						oldStartY = startY;
 						oldEndY = endY;
 						oldEndX = endX;
 						startX -= 20;
-						endX -= 20;*/
-
-						drawingCursor(startX, startY, endX, endY);
-						calculate_coordinates(startX, endX, startY, endY);
-
+						endX -= 20;
 						startX = startX -(razlika*(2));
 						startY = startY +(razlika*(3));
 						endX = endX-(razlika*(2));
 						endY = endY+(razlika*(3));
 
-
-
+						drawingCursor(startX, startY, endX, endY);
 						if(flagForCursor == 0){
 							if(sadasnji_nivo == 0 && randomMap[sadasnji_nivo][i][j+1] == -1){
-								//drawBlue(oldStartX, oldEndX, oldStartY, oldEndY);
-								drawBlue(startX, endX, startY, endY);
+								drawBlue(oldStartX, oldEndX, oldStartY, oldEndY);
 							}else{
-								//drawMap(randomMap[sadasnji_nivo][i][j+1]*20, 0, oldStartX, oldStartY, 20, 28, sadasnji_nivo);
-								drawMap(randomMap[sadasnji_nivo][i-1][j]*20, 0, startX, startY, 20, 28, sadasnji_nivo);
+								drawMap(randomMap[sadasnji_nivo][i][j+1]*20, 0, oldStartX, oldStartY, 20, 28 );
 							}
 						}else{
 							flagForCursor = 0;
@@ -459,45 +457,30 @@ void move() {
 
 					if (endX < 251) {
 
-						//sledeci_nivo = 0;
-
-						if(randomMap[0][i][j+1] != -1){
-							sledeci_nivo = 0;
-						}
-						if(randomMap[1][i][j+1] != -1){
-							sledeci_nivo = 1;
-						}
-						if(randomMap[2][i][j+1] != -1){
-							sledeci_nivo = 2;
-						}
+						sledeci_nivo = calculate_level(i, j, sledece_stanje);
 
 						razlika = sadasnji_nivo - sledeci_nivo;
 
 						j = j + 1;
 
-						/*oldStartX = startX;
+						oldStartX = startX;
 						oldStartY = startY;
 						oldEndY = endY;
 						oldEndX = endX;
 						startX += 20;
-						endX += 20;*/
-						drawingCursor(startX, startY, endX, endY);
-						calculate_coordinates(startX, endX, startY, endY);
-
+						endX += 20;
 						startX = startX -(razlika*(2));
 						startY = startY +(razlika*(3));
 						endX = endX-(razlika*(2));
 						endY = endY+(razlika*(3));
 
-
+						drawingCursor(startX, startY, endX, endY);
 
 						if(flagForCursor == 0){
 							if(sadasnji_nivo == 0 && randomMap[sadasnji_nivo][i][j-1] == -1){
-								//drawBlue(oldStartX, oldEndX, oldStartY, oldEndY);
-								drawBlue(startX, endX, startY, endY);
+								drawBlue(oldStartX, oldEndX, oldStartY, oldEndY);
 							}else{
-								//drawMap(randomMap[sadasnji_nivo][i][j-1]*20, 0, oldStartX, oldStartY, 20, 28, sadasnji_nivo);
-								drawMap(randomMap[sadasnji_nivo][i-1][j]*20, 0, startX, startY, 20, 28, sadasnji_nivo);
+								drawMap(randomMap[sadasnji_nivo][i][j-1]*20, 0, oldStartX, oldStartY, 20, 28 );
 							}
 						}else{
 							flagForCursor = 0;
@@ -510,156 +493,111 @@ void move() {
 
 				case CENTER_PRESSED:
 					if(flag == 0){ // nije selektovano
-						if(randomMap[sadasnji_nivo][i][j-1] == -1 || randomMap[sadasnji_nivo][i][j+1] == -1 || j == 0 || j == 9){ //da li moze da se selektuje(slobodne bocne ivice)
-							if(randomMap[sadasnji_nivo][i][j] != -1){
-								flagX = i;
-								flagY = j;
-								flagVisina = sadasnji_nivo;
-								flagForCursor = 1;
-								flag = 1;
-							}
-						}
-					}else if(flag == 1){
-						if(randomMap[sadasnji_nivo][i][j-1] == -1 || randomMap[sadasnji_nivo][i][j+1] == -1 || j == 0 || j == 9){
-							if(randomMap[sadasnji_nivo][i][j] == randomMap[flagVisina][flagX][flagY]){ //da li su selektovana dva ista
-								if(sadasnji_nivo != flagVisina || i != flagX || j != flagY){ //da li selektujemo samog sebe
-									randomMap[sadasnji_nivo][i][j] = -1;
-									randomMap[flagVisina][flagX][flagY] = -1;
-									flag = 0;
+											if(randomMap[sadasnji_nivo][i][j-1] == -1 || randomMap[sadasnji_nivo][i][j+1] == -1 || j == 0 || j == 9){ //da li moze da se selektuje(slobodne bocne ivice)
+												if(randomMap[sadasnji_nivo][i][j] != -1){
+													flagX = i;
+													flagY = j;
+													flagVisina = sadasnji_nivo;
+													flagForCursor = 1;
+													flag = 1;
+												}
+											}
+										}else if(flag == 1){
+											if(randomMap[sadasnji_nivo][i][j-1] == -1 || randomMap[sadasnji_nivo][i][j+1] == -1 || j == 0 || j == 9){
+												if(randomMap[sadasnji_nivo][i][j] == randomMap[flagVisina][flagX][flagY]){ //da li su selektovana dva ista
+													if(sadasnji_nivo != flagVisina || i != flagX || j != flagY){ //da li selektujemo samog sebe
+														randomMap[sadasnji_nivo][i][j] = -1;
+														randomMap[flagVisina][flagX][flagY] = -1;
+														flag = 0;
 
-									drawMap(randomMap[sadasnji_nivo][i+1][j]*20, 0, oldStartX, oldStartY, 20, 28, sadasnji_nivo);
+														drawMap(randomMap[sadasnji_nivo][i+1][j]*20, 0, oldStartX, oldStartY, 20, 28);
 
-									int nova_pozicija = 0;
+														int nova_pozicija = 0;
 
-									//postavljanje kursora na prvu gornju poziciju nakon brisanja nekih plocica
-									for (ii = 0; ii <= 2; ii++) {
-										for (jj = 0; jj < 8; jj++) {
-											for (k = 0; k < 10; k++){
-												if(nova_pozicija == 0) {
-													if (randomMap[ii][jj][k] != -1) {
-														nova_pozicija = 1;
-														i = jj;
-														j = k;
-														sadasnji_nivo = ii;
+														//postavljanje kursora na prvu gornju poziciju nakon brisanja nekih plocica
+														for (ii = 0; ii <= 2; ii++) { //nivoi
+															for (jj = 0; jj < 8; jj++) { //duzina
+																for (k = 0; k < 10; k++){ //sirina
+																	if(nova_pozicija == 0) {
+																		if (randomMap[ii][jj][k] != -1) {
+																			nova_pozicija = 1;
+																			i = jj;
+																			j = k;
+																			sadasnji_nivo = ii;
 
-														//int startX = 60, startY = 8, endX = 80, endY = 36;
-														if (sadasnji_nivo == 0) {
-															startX = 60 + j*20;
-															startY = 8 + i*28;
-															endX = 60 + j*20 + 20;
-															endY = 8 + i*28 + 28;
+																			//int startX = 60, startY = 8, endX = 80, endY = 36;
 
-														} else if (sadasnji_nivo == 1) {
-															startX = 60 + j*20 + 2;
-															startY = 8 + i*28 - 3;
-															endX = 60 + j*20 + 20 + 2;
-															endY = 8 + i*28 + 28 - 3;
-														} else if (sadasnji_nivo == 2) {
-															startX = 60 + j*20 + 4;
-															startY = 8 + i*28 - 6;
-															endX = 60 + j*20 + 20 + 4;
-															endY = 8 + i*28 + 28 - 6;
+																			if (sadasnji_nivo == 0) {
+																				startX = 60 + j*20;
+																				startY = 8 + i*28;
+																				endX = 60 + j*20 + 20;
+																				endY = 8 + i*28 + 28;
 
+																			} else if (sadasnji_nivo == 1) {
+																				startX = 60 + j*20 + 2;
+																				startY = 8 + i*28 - 3;
+																				endX = 60 + j*20 + 20 + 2;
+																				endY = 8 + i*28 + 28 - 3;
+																			} else {
+																				startX = 60 + j*20 + 4;
+																				startY = 8 + i*28 - 6;
+																				endX = 60 + j*20 + 20 + 4;
+																				endY = 8 + i*28 + 28 - 6;
+
+																			}
+																		}
+
+																	}
+																}
+															}
 														}
-													}
 
-												}
-											}
-										}
-									}
+														drawMap(randomMap[flagVisina][flagX][flagY]*20,0,oldStartX,oldStartY, 20, 28);
 
-									drawMap(randomMap[flagVisina][flagX][flagY]*20,0,oldStartX,oldStartY, 20, 28, sadasnji_nivo);
+														for (ii = 0; ii < 3; ii++) {
+															for (jj = 0; jj < 8; jj++) {
+																for (k = 0; k < 10; k++){
+																	if(randomMap[ii][jj][k] != -1){
+																		if(ii == 0){
+																			drawMap(randomMap[ii][jj][k]*20, 0, 60+k*20, 8+jj*28, 20, 28);
+																		}else if(ii == 1){
+																				if( jj > 0 && jj < 7 && k > 0 && k < 9){
+																					drawMap(randomMap[ii][jj][k]*20, 0, 60+k*20+2, 8+jj*28-3, 20, 28);
+																				}
+																		}else{
+																				if(jj > 1 && jj < 6 && k > 1 && k < 8){
+																					drawMap(randomMap[ii][jj][k]*20, 0, 60+k*20+4, 8+jj*28-6, 20, 28);
+																				}
+																		}
+																	}else{
+																		if(ii == 0){
 
-									for (ii = 0; ii < 3; ii++) {
-										for (jj = 0; jj < 8; jj++) {
-											for (k = 0; k < 10; k++){
-												if(randomMap[ii][jj][k] != -1){
-													if(ii == 0){
-														drawMap(randomMap[ii][jj][k]*20, 0, 60+k*20, 8+jj*28, 20, 28, sadasnji_nivo);
-													}else if(ii == 1){
-															if( jj > 0 && jj < 7 && k > 0 && k < 9){
-																drawMap(randomMap[ii][jj][k]*20, 0, 60+k*20+2, 8+jj*28-3, 20, 28, sadasnji_nivo);
+																			drawBlue(60 + k*20, 60+ k*20+20, 8+jj*28, 8+jj*28+28);
+
+																		}
+																	}
+																}
 															}
-													}else{
-															if(jj > 1 && jj < 6 && k > 1 && k < 8){
-																drawMap(randomMap[ii][jj][k]*20, 0, 60+k*20+4, 8+jj*28-6, 20, 28, sadasnji_nivo);
+														}
+
+														drawingCursor(startX, startY, endX, endY);
+
+																	} else{
+
+
+
+																	}
+
+
+																}
 															}
-													}
-												}else{
-													if(ii == 0){
-														//
-														drawBlue(60 + k*20, 60+ k*20+20, 8+jj*28, 8+jj*28+28);
-														//cleanup_platform(); //??????????????????????????????????????????????????????????
-													}
-												}
-											}
-										}
-									}
+														}
 
-									drawingCursor(startX, startY, endX, endY);
+										break;
 
-												} else{
+									case IDLE:
+										break;
 
-
-													//cleanup_platform();
-
-
-													/*cleanup_platform();
-													drawMap(randomMap[sadasnji_nivo][i][j+1]*20, 0, oldStartX, oldStartY, 20, 28, sadasnji_nivo);
-													drawMap(randomMap[flagVisina][flagX][flagY]*20,0,oldStartX,oldStartY, 20, 28, sadasnji_nivo);
-
-													int nova_pozicija = 0;
-													//postavljanje kursora na prvu gornju poziciju nakon brisanja nekih plocica
-													for (ii = 0; ii <= 2; ii++) {
-																							for (jj = 0; jj < 8; jj++) {
-																								for (k = 0; k < 10; k++){
-																									if(nova_pozicija == 0) {
-																										if (randomMap[ii][jj][k] != -1) {
-																											nova_pozicija = 1;
-																											i = jj;
-																											j = k;
-																											sadasnji_nivo = ii;
-
-																											//int startX = 60, startY = 8, endX = 80, endY = 36;
-																											if (sadasnji_nivo == 0) {
-																												startX = 60 + j*20;
-																												startY = 8 + i*28;
-																												endX = 60 + j*20 + 20;
-																												endY = 8 + i*28 + 28;
-
-																											} else if (sadasnji_nivo == 1) {
-																												startX = 60 + j*20 + 2;
-																												startY = 8 + i*28 - 3;
-																												endX = 60 + j*20 + 20 + 2;
-																												endY = 8 + i*28 + 28 - 3;
-																											} else if (sadasnji_nivo == 2) {
-																												startX = 60 + j*20 + 4;
-																												startY = 8 + i*28 - 6;
-																												endX = 60 + j*20 + 20 + 4;
-																												endY = 8 + i*28 + 28 - 6;
-
-																											}
-																										}
-
-																									}
-																								}
-																							}
-																						}*/
-
-
-
-
-												}
-
-
-											}
-										}
-									}
-
-					break;
-
-				case IDLE:
-					break;
 
 			}
 
@@ -668,6 +606,13 @@ void move() {
 	}
 
 }
+
+void drawMap2(int i, int j, int k){
+	if(randomMap[i][j][k] != -1){
+		drawMap(randomMap[i][j][k] * 20, 0, 60 + k * 20 + 2*i, 8 + j * 28 -3*i, 20, 28);
+	}
+}
+
 void drawWholeMap(){
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 8; j++) {
@@ -679,9 +624,6 @@ void drawWholeMap(){
 }
 
 int main() {
-
-	inc1 = 0;
-	inc2 = 0;
 
 	init_platform();
 
@@ -702,18 +644,17 @@ int main() {
 	VGA_PERIPH_MEM_mWriteMemory(
 			XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + 0x20, 1);
 
-	//black background
+	//setting background color
 	for (x = 0; x < 320; x++) {
 		for (y = 0; y < 240; y++) {
-			i = y * 320 + x;
+			q = y * 320 + x;
 			VGA_PERIPH_MEM_mWriteMemory(
 					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
-							+ i * 4, 0x000000);
+							+ q * 4, 0x000000);
 		}
 	}
 
 	makeTable();
-
 
 	drawWholeMap();
 
