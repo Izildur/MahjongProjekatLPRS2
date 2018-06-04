@@ -43,7 +43,6 @@
 #include "mahjong_sprites.h"
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>
-#include <stdbool.h>
 #define SIZE 9
 #define UP 0b01000000
 #define DOWN 0b00000100
@@ -56,9 +55,7 @@
 #define BEG '@'
 
 int q, x, y, ii, oi, R, G, B, RGB, kolona, red, RGBgray;
-int cX = 0, cY = 0;
-int oldStartX, oldStartY, oldEndX, oldEndY;
-int startX = 60, startY = 8, endX = 80, endY = 36;	//cursor start, end, coordinates
+int cX = 0, cY = 0, cL = 0;
 
 int randomMap[3][8][10];
 
@@ -73,7 +70,6 @@ typedef enum {
 
 void drawMap2(int i, int j, int k);
 void drawWholeMap();
-int selectable(int sadasnji_nivo);
 
 //function that generates random game map
 void makeTable() {
@@ -325,9 +321,10 @@ state_t detect_keypress() {
 
 //function that controls switches and buttons
 void move() {
-	//int startX = 60, startY = 8, endX = 80, endY = 36;	//cursor start, end, coordinates
-	//int oldStartX, oldStartY, oldEndX, oldEndY;
+	int startX = 60, startY = 8, endX = 80, endY = 36;	//cursor start, end, coordinates
+	int oldStartX, oldStartY, oldEndX, oldEndY;
 	int sadasnji_nivo, sledeci_nivo, razlika;
+	//int ii, jj, k;
 	int flagX = -1, flagY = -1, flagVisina = -1, flag = 0, flagForCursor = 0;
 	state_t prethodno_stanje = IDLE, sledece_stanje = IDLE;
 
@@ -497,40 +494,42 @@ void move() {
 
 				case CENTER_PRESSED:
 					if(flag == 0){ // nije selektovano
-						if(selectable(sadasnji_nivo) == 1){
+						if(randomMap[sadasnji_nivo][cY][cX-1] == -1 || randomMap[sadasnji_nivo][cY][cX+1] == -1 || cX == 0 || cX == 9){ //da li moze da se selektuje(slobodne bocne ivice)
+							if(randomMap[sadasnji_nivo][cY][cX] != -1){
 								flagX = cY;
 								flagY = cX;
 								flagVisina = sadasnji_nivo;
 								flagForCursor = 1;
 								flag = 1;
 							}
+						}
 					}else if(flag == 1){
-						if(selectable(sadasnji_nivo) == 1){
-							if(randomMap[sadasnji_nivo][cY][cX] == randomMap[flagVisina][flagX][flagY]){ //da li su selektovana dva ista
-								if(sadasnji_nivo != flagVisina || cY != flagX || cX != flagY){ //da li selektujemo samog sebe
-									randomMap[sadasnji_nivo][cY][cX] = -1;
-									randomMap[flagVisina][flagX][flagY] = -1;
-									flag = 0;
+								if(randomMap[sadasnji_nivo][cY][cX-1] == -1 || randomMap[sadasnji_nivo][cY][cX+1] == -1 || cX == 0 || cX == 9){
+									if(randomMap[sadasnji_nivo][cY][cX] == randomMap[flagVisina][flagX][flagY]){ //da li su selektovana dva ista
+										if(sadasnji_nivo != flagVisina || cY != flagX || cX != flagY){ //da li selektujemo samog sebe
+											randomMap[sadasnji_nivo][cY][cX] = -1;
+											randomMap[flagVisina][flagX][flagY] = -1;
+											flag = 0;
 
-									drawMap(randomMap[sadasnji_nivo][cY+1][cX]*20, 0, oldStartX, oldStartY, 20, 28);
+											drawMap(randomMap[sadasnji_nivo][cY+1][cX]*20, 0, oldStartX, oldStartY, 20, 28);
 
-									sadasnji_nivo = calculate_level(cY, cX, sledece_stanje);
+											sadasnji_nivo = calculate_level(cY, cX, sledece_stanje);
 
-									startX = 60 + cX*20 + sadasnji_nivo*2;
-									startY = 8 + cY*28 - sadasnji_nivo*3;
-									endX = startX + 20;
-									endY = startY + 28;
+											startX = 60 + cX*20 + sadasnji_nivo*2;
+											startY = 8 + cY*28 - sadasnji_nivo*3;
+											endX = startX + 20;
+											endY = startY + 28;
 
-									drawMap(randomMap[flagVisina][flagX][flagY]*20,0,oldStartX,oldStartY, 20, 28);
+											drawMap(randomMap[flagVisina][flagX][flagY]*20,0,oldStartX,oldStartY, 20, 28);
 
-									drawWholeMap();
+											drawWholeMap();
 
-									drawingCursor(startX, startY, endX, endY);
+											drawingCursor(startX, startY, endX, endY);
 
+											}
+										}
 									}
 								}
-							}
-						}
 
 					break;
 
@@ -544,15 +543,6 @@ void move() {
 
 	}
 
-}
-
-int selectable(int sadasnji_nivo){
-	if(randomMap[sadasnji_nivo][cY][cX-1] == -1 || randomMap[sadasnji_nivo][cY][cX+1] == -1 || cX == 0 || cX == 9){
-		if(randomMap[sadasnji_nivo][cY][cX] != -1){
-			return 1;
-		}
-	}
-	return 0;
 }
 
 void drawMap2(int i, int j, int k){
@@ -574,7 +564,10 @@ void drawWholeMap(){
 	}
 }
 
+
 int main() {
+
+	//unsigned char str[] = "BROJ PLOCICA\n";
 
 	init_platform();
 
@@ -604,6 +597,12 @@ int main() {
 							+ q * 4, 0x000000);
 		}
 	}
+
+	/*while(detect_keypress() != CENTER_PRESSED){
+		clear_text_screen(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR);
+		set_cursor(1);
+		print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, str, 13);
+	}*/
 
 	makeTable();
 

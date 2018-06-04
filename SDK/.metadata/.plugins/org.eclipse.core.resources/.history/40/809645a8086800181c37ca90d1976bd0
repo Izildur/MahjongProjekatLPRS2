@@ -57,8 +57,6 @@
 
 int q, x, y, ii, oi, R, G, B, RGB, kolona, red, RGBgray;
 int cX = 0, cY = 0;
-int oldStartX, oldStartY, oldEndX, oldEndY;
-int startX = 60, startY = 8, endX = 80, endY = 36;	//cursor start, end, coordinates
 
 int randomMap[3][8][10];
 
@@ -325,8 +323,8 @@ state_t detect_keypress() {
 
 //function that controls switches and buttons
 void move() {
-	//int startX = 60, startY = 8, endX = 80, endY = 36;	//cursor start, end, coordinates
-	//int oldStartX, oldStartY, oldEndX, oldEndY;
+	int startX = 60, startY = 8, endX = 80, endY = 36;	//cursor start, end, coordinates
+	int oldStartX, oldStartY, oldEndX, oldEndY;
 	int sadasnji_nivo, sledeci_nivo, razlika;
 	int flagX = -1, flagY = -1, flagVisina = -1, flag = 0, flagForCursor = 0;
 	state_t prethodno_stanje = IDLE, sledece_stanje = IDLE;
