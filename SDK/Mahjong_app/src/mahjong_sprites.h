@@ -5,7 +5,10 @@ static const struct {
   unsigned int 	 height;
   unsigned int 	 bytes_per_pixel; /* 2:RGB16, 3:RGB, 4:RGBA */ 
   unsigned char	 pixel_data[860 * 28 * 3 + 1];
-} mahjong_sprites = {
+
+}
+
+mahjong_sprites = {
   860, 28, 3,
   "\0\0\0\0\0\0cZJcZJcZJcZJcZJcZJcZJcZJcZJcZJcZJcZJcZJcZJcZJcZJcZJcZJ\0\0\0"
   "\0\0\0cZJcZJcZJcZJcZJcZJcZJcZJcZJcZJcZJcZJcZJcZJcZJcZJcZJcZJ\0\0\0\0\0\0"
