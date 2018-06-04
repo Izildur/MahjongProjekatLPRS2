@@ -323,11 +323,18 @@ state_t detect_keypress() {
 	return state;
 }
 
+void screen_coordinates(int nivo){//(state_t state, int razlika){
+
+	startX = 60 + cX*20 + nivo*2;
+	startY = 8 + cY*28 - nivo*3;
+	endX = startX + 20;
+	endY = startY + 28;
+
+}
+
 //function that controls switches and buttons
 void move() {
-	//int startX = 60, startY = 8, endX = 80, endY = 36;	//cursor start, end, coordinates
-	//int oldStartX, oldStartY, oldEndX, oldEndY;
-	int sadasnji_nivo, sledeci_nivo, razlika;
+	int sadasnji_nivo, sledeci_nivo;
 	int flagX = -1, flagY = -1, flagVisina = -1, flag = 0, flagForCursor = 0;
 	state_t prethodno_stanje = IDLE, sledece_stanje = IDLE;
 
@@ -352,33 +359,25 @@ void move() {
 
 						sledeci_nivo = calculate_level(cY, cX, sledece_stanje);
 
-						razlika = sadasnji_nivo - sledeci_nivo;
-
 						calculate_coordinates(sledece_stanje);
 
-						oldStartX = startX;
-						oldStartY = startY;
-						oldEndY = endY;
-						oldEndX = endX;
-						startY += 28;
-						endY += 28;
+						if(flagForCursor == 0){
+													if(sadasnji_nivo == 0 && randomMap[sadasnji_nivo][cY-1][cX] == -1){
+														drawBlue(startX, endX, startY, endY);
+													}else{
+														drawMap(randomMap[sadasnji_nivo][cY-1][cX]*20, 0, startX, startY, 20, 28);
+													}
+												}else{
+													flagForCursor = 0;
+												}
 
-						startX = startX -(razlika*(2));
-						startY = startY +(razlika*(3));
-						endX = endX-(razlika*(2));
-						endY = endY+(razlika*(3));
+						screen_coordinates(sledeci_nivo);
 
 						drawingCursor(startX, startY, endX, endY);
 
-						if(flagForCursor == 0){
-							if(sadasnji_nivo == 0 && randomMap[sadasnji_nivo][cY-1][cX] == -1){
-								drawBlue(oldStartX, oldEndX, oldStartY, oldEndY);
-							}else{
-								drawMap(randomMap[sadasnji_nivo][cY-1][cX]*20, 0, oldStartX, oldStartY, 20, 28);
-							}
-						}else{
-							flagForCursor = 0;
-						}
+
+
+
 
 						break;
 					}
@@ -389,33 +388,21 @@ void move() {
 
 						sledeci_nivo = calculate_level(cY, cX, sledece_stanje);
 
-						razlika = sadasnji_nivo - sledeci_nivo;
-
 						calculate_coordinates(sledece_stanje);
 
-						oldStartX = startX;
-						oldStartY = startY;
-						oldEndY = endY;
-						oldEndX = endX;
-						startY -= 28;
-						endY -= 28;
+						if(flagForCursor == 0){
+													if(sadasnji_nivo == 0 && randomMap[sadasnji_nivo][cY+1][cX] == -1){
+														drawBlue(startX, endX, startY, endY);
+													} else{
+														drawMap(randomMap[sadasnji_nivo][cY+1][cX]*20,0,startX,startY, 20, 28 );
+													}
+												} else{
+														flagForCursor = 0;
+												  }
 
-						startX = startX -(razlika*(2));
-						startY = startY +(razlika*(3));
-						endX = endX-(razlika*(2));
-						endY = endY+(razlika*(3));
+						screen_coordinates(sledeci_nivo);
 
 						drawingCursor(startX, startY, endX, endY);
-
-						if(flagForCursor == 0){
-							if(sadasnji_nivo == 0 && randomMap[sadasnji_nivo][cY+1][cX] == -1){
-								drawBlue(oldStartX, oldEndX, oldStartY, oldEndY);
-							} else{
-								drawMap(randomMap[sadasnji_nivo][cY+1][cX]*20,0,oldStartX,oldStartY, 20, 28 );
-							}
-						} else{
-								flagForCursor = 0;
-						  }
 
 						break;
 					}
@@ -428,31 +415,22 @@ void move() {
 
 						sledeci_nivo = calculate_level(cY, cX, sledece_stanje);
 
-						razlika = sadasnji_nivo - sledeci_nivo;
-
 						calculate_coordinates(sledece_stanje);
 
-						oldStartX = startX;
-						oldStartY = startY;
-						oldEndY = endY;
-						oldEndX = endX;
-						startX -= 20;
-						endX -= 20;
-						startX = startX -(razlika*(2));
-						startY = startY +(razlika*(3));
-						endX = endX-(razlika*(2));
-						endY = endY+(razlika*(3));
+						if(flagForCursor == 0){
+													if(sadasnji_nivo == 0 && randomMap[sadasnji_nivo][cY][cX+1] == -1){
+														drawBlue(startX, endX, startY, endY);
+													}else{
+														drawMap(randomMap[sadasnji_nivo][cY][cX+1]*20, 0, startX, startY, 20, 28 );
+													}
+												}else{
+													flagForCursor = 0;
+													}
+
+						screen_coordinates(sledeci_nivo);
 
 						drawingCursor(startX, startY, endX, endY);
-						if(flagForCursor == 0){
-							if(sadasnji_nivo == 0 && randomMap[sadasnji_nivo][cY][cX+1] == -1){
-								drawBlue(oldStartX, oldEndX, oldStartY, oldEndY);
-							}else{
-								drawMap(randomMap[sadasnji_nivo][cY][cX+1]*20, 0, oldStartX, oldStartY, 20, 28 );
-							}
-						}else{
-							flagForCursor = 0;
-							}
+
 
 						break;
 					}
@@ -464,32 +442,23 @@ void move() {
 
 						sledeci_nivo = calculate_level(cY, cX, sledece_stanje);
 
-						razlika = sadasnji_nivo - sledeci_nivo;
-
 						calculate_coordinates(sledece_stanje);
 
-						oldStartX = startX;
-						oldStartY = startY;
-						oldEndY = endY;
-						oldEndX = endX;
-						startX += 20;
-						endX += 20;
-						startX = startX -(razlika*(2));
-						startY = startY +(razlika*(3));
-						endX = endX-(razlika*(2));
-						endY = endY+(razlika*(3));
+						if(flagForCursor == 0){
+													if(sadasnji_nivo == 0 && randomMap[sadasnji_nivo][cY][cX-1] == -1){
+														drawBlue(startX, endX, startY, endY);
+													}else{
+														drawMap(randomMap[sadasnji_nivo][cY][cX-1]*20, 0, startX, startY, 20, 28 );
+													}
+												}else{
+													flagForCursor = 0;
+													}
+
+						screen_coordinates(sledeci_nivo);
 
 						drawingCursor(startX, startY, endX, endY);
 
-						if(flagForCursor == 0){
-							if(sadasnji_nivo == 0 && randomMap[sadasnji_nivo][cY][cX-1] == -1){
-								drawBlue(oldStartX, oldEndX, oldStartY, oldEndY);
-							}else{
-								drawMap(randomMap[sadasnji_nivo][cY][cX-1]*20, 0, oldStartX, oldStartY, 20, 28 );
-							}
-						}else{
-							flagForCursor = 0;
-							}
+
 
 						break;
 					}
@@ -512,16 +481,11 @@ void move() {
 									randomMap[flagVisina][flagX][flagY] = -1;
 									flag = 0;
 
-									drawMap(randomMap[sadasnji_nivo][cY+1][cX]*20, 0, oldStartX, oldStartY, 20, 28);
+									drawMap(randomMap[sadasnji_nivo][cY+1][cX]*20, 0, startX, startY, 20, 28);
 
 									sadasnji_nivo = calculate_level(cY, cX, sledece_stanje);
 
-									startX = 60 + cX*20 + sadasnji_nivo*2;
-									startY = 8 + cY*28 - sadasnji_nivo*3;
-									endX = startX + 20;
-									endY = startY + 28;
-
-									drawMap(randomMap[flagVisina][flagX][flagY]*20,0,oldStartX,oldStartY, 20, 28);
+									screen_coordinates(sadasnji_nivo);
 
 									drawWholeMap();
 
@@ -536,7 +500,6 @@ void move() {
 
 					case IDLE:
 					break;
-
 
 			}
 
