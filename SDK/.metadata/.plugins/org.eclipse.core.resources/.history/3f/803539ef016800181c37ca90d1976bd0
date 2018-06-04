@@ -532,18 +532,49 @@ void move() {
 											drawMap(randomMap[flagVisina][flagX][flagY]*20,0,oldStartX,oldStartY, 20, 28);
 
 											drawWholeMap();
+												/*for (ii = 0; ii < 3; ii++) {
+													for (jj = 0; jj < 8; jj++) {
+														for (k = 0; k < 10; k++){
+															if(randomMap[ii][jj][k] != -1){
+																		if(ii == 0){
+																			drawMap2(ii, jj, k);
+																		}else if(ii == 1){
+																				if( jj > 0 && jj < 7 && k > 0 && k < 9){
+																					drawMap2(ii, jj, k);
+																				}
+																		}else{
+																				if(jj > 1 && jj < 6 && k > 1 && k < 8){
+																					drawMap2(ii, jj, k);
+																				}
+																		}
+																	}else{
+																		if(ii == 0){
 
-											drawingCursor(startX, startY, endX, endY);
+																			drawBlue(60 + k*20, 60+ k*20+20, 8+jj*28, 8+jj*28+28);
 
-											}
-										}
-									}
-								}
+																		}
+																	}
+																}
+															}
+														}*/
 
-					break;
+														drawingCursor(startX, startY, endX, endY);
 
-					case IDLE:
-					break;
+																	} else{
+
+
+
+																	}
+
+
+																}
+															}
+														}
+
+										break;
+
+									case IDLE:
+										break;
 
 
 			}
@@ -557,10 +588,7 @@ void move() {
 void drawMap2(int i, int j, int k){
 	if(randomMap[i][j][k] != -1){
 		drawMap(randomMap[i][j][k] * 20, 0, 60 + k * 20 + 2*i, 8 + j * 28 -3*i, 20, 28);
-	} else if(i == 0){
-		drawBlue(60 + k*20, 60+ k*20+20, 8+j*28, 8+j*28+28);
 	}
-
 }
 
 void drawWholeMap(){
@@ -568,7 +596,11 @@ void drawWholeMap(){
 		for (int j = 0; j < 8; j++) {
 			for (int k = 0; k < 10; k++) {
 				drawMap2(i, j, k);
+
 			}
+		}
+		if(i == 0){
+			drawBlue(60 + k*20, 60+ k*20+20, 8+jj*28, 8+jj*28+28);
 		}
 	}
 }

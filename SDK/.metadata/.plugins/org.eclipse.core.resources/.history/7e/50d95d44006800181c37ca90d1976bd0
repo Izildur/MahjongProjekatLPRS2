@@ -68,9 +68,6 @@ typedef enum {
 	UP_PRESSED
 } state_t;
 
-void drawMap2(int i, int j, int k);
-void drawWholeMap();
-
 //function that generates random game map
 void makeTable() {
 	int numOfSprites, row, column, level, i, j, k, r;
@@ -324,7 +321,7 @@ void move() {
 	int startX = 60, startY = 8, endX = 80, endY = 36;	//cursor start, end, coordinates
 	int oldStartX, oldStartY, oldEndX, oldEndY;
 	int sadasnji_nivo, sledeci_nivo, razlika;
-	//int ii, jj, k;
+	int ii, jj, k;
 	int flagX = -1, flagY = -1, flagVisina = -1, flag = 0, flagForCursor = 0;
 	state_t prethodno_stanje = IDLE, sledece_stanje = IDLE;
 
@@ -531,19 +528,49 @@ void move() {
 
 											drawMap(randomMap[flagVisina][flagX][flagY]*20,0,oldStartX,oldStartY, 20, 28);
 
-											drawWholeMap();
+												for (ii = 0; ii < 3; ii++) {
+													for (jj = 0; jj < 8; jj++) {
+														for (k = 0; k < 10; k++){
+															if(randomMap[ii][jj][k] != -1){
+																		if(ii == 0){
+																			drawMap(randomMap[ii][jj][k]*20, 0, 60+k*20, 8+jj*28, 20, 28);
+																		}else if(ii == 1){
+																				if( jj > 0 && jj < 7 && k > 0 && k < 9){
+																					drawMap(randomMap[ii][jj][k]*20, 0, 60+k*20+2, 8+jj*28-3, 20, 28);
+																				}
+																		}else{
+																				if(jj > 1 && jj < 6 && k > 1 && k < 8){
+																					drawMap(randomMap[ii][jj][k]*20, 0, 60+k*20+4, 8+jj*28-6, 20, 28);
+																				}
+																		}
+																	}else{
+																		if(ii == 0){
 
-											drawingCursor(startX, startY, endX, endY);
+																			drawBlue(60 + k*20, 60+ k*20+20, 8+jj*28, 8+jj*28+28);
 
-											}
-										}
-									}
-								}
+																		}
+																	}
+																}
+															}
+														}
 
-					break;
+														drawingCursor(startX, startY, endX, endY);
 
-					case IDLE:
-					break;
+																	} else{
+
+
+
+																	}
+
+
+																}
+															}
+														}
+
+										break;
+
+									case IDLE:
+										break;
 
 
 			}
@@ -557,10 +584,7 @@ void move() {
 void drawMap2(int i, int j, int k){
 	if(randomMap[i][j][k] != -1){
 		drawMap(randomMap[i][j][k] * 20, 0, 60 + k * 20 + 2*i, 8 + j * 28 -3*i, 20, 28);
-	} else if(i == 0){
-		drawBlue(60 + k*20, 60+ k*20+20, 8+j*28, 8+j*28+28);
 	}
-
 }
 
 void drawWholeMap(){

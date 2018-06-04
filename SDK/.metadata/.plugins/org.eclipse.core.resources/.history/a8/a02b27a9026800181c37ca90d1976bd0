@@ -540,10 +540,10 @@ void move() {
 									}
 								}
 
-					break;
+										break;
 
-					case IDLE:
-					break;
+									case IDLE:
+										break;
 
 
 			}
