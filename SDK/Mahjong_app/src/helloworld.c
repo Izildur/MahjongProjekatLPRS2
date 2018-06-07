@@ -55,12 +55,12 @@
 //BEG---unpened field
 #define BEG '@'
 
-int q, x, y, ii, oi, R, G, B, RGB, kolona, red, RGBgray;
-int cX = 0, cY = 0;
+int q, x, y, oi, R, G, B, RGB, kolona, red, RGBgray;
+int cX = 0, cY = 0; //coordinates of matrix
 int oldStartX, oldStartY, oldEndX, oldEndY;
 int startX = 60, startY = 8, endX = 80, endY = 36;	//cursor start, end, coordinates
 
-int randomMap[3][8][10];
+int map[3][8][10];
 
 typedef enum {
 	IDLE,
@@ -71,7 +71,7 @@ typedef enum {
 	UP_PRESSED
 } state_t;
 
-void drawMap2(int i, int j, int k);
+void drawElement(int i, int j, int k);
 void drawWholeMap();
 int selectable(int sadasnji_nivo);
 
@@ -83,7 +83,7 @@ void makeTable() {
 	for (i = 0; i < 3; i++) {
 		for (j = 0; j < 8; j++) {
 			for (k = 0; k < 10; k++)
-			randomMap[i][j][k] = -1;
+			map[i][j][k] = -1;
 		}
 	}
 
@@ -106,8 +106,8 @@ void makeTable() {
 				row += 2;
 				column += 2;
 			}
-			if (randomMap[level][row][column] == -1) {
-				randomMap[level][row][column] = numOfSprites;
+			if (map[level][row][column] == -1) {
+				map[level][row][column] = numOfSprites;
 				numOfSprites--;
 			}
 		}
@@ -185,7 +185,7 @@ void drawingCursor(int startX, int startY, int endX, int endY) {
 
 }
 
-void drawBlue(int startX, int endX, int startY, int endY){
+void drawBlack(int startX, int endX, int startY, int endY){
 
 	for (x = startX; x < endX; x++) {
 		for (y = startY; y < endY; y++) {
@@ -205,61 +205,61 @@ int calculate_level(int i, int j, state_t state){
 	switch(state){
 
 		case DOWN_PRESSED:
-			if(randomMap[0][i+1][j] != -1){
+			if(map[0][i+1][j] != -1){
 				sledeci_nivo = 0;
 			}
-			if(randomMap[1][i+1][j] != -1){
+			if(map[1][i+1][j] != -1){
 				sledeci_nivo = 1;
 			}
-			if(randomMap[2][i+1][j] != -1){
+			if(map[2][i+1][j] != -1){
 				sledeci_nivo = 2;
 			}
 		break;
 
 		case UP_PRESSED:
-			if(randomMap[0][i-1][j] != -1){
+			if(map[0][i-1][j] != -1){
 				sledeci_nivo = 0;
 			}
-			if(randomMap[1][i-1][j] != -1){
+			if(map[1][i-1][j] != -1){
 				sledeci_nivo = 1;
 			}
-			if(randomMap[2][i-1][j] != -1){
+			if(map[2][i-1][j] != -1){
 				sledeci_nivo = 2;
 			}
 		break;
 
 		case RIGHT_PRESSED:
-			if(randomMap[0][i][j+1] != -1){
+			if(map[0][i][j+1] != -1){
 				sledeci_nivo = 0;
 			}
-			if(randomMap[1][i][j+1] != -1){
+			if(map[1][i][j+1] != -1){
 				sledeci_nivo = 1;
 			}
-			if(randomMap[2][i][j+1] != -1){
+			if(map[2][i][j+1] != -1){
 				sledeci_nivo = 2;
 			}
 		break;
 
 		case LEFT_PRESSED:
-			if(randomMap[0][i][j-1] != -1){
+			if(map[0][i][j-1] != -1){
 				sledeci_nivo = 0;
 			}
-			if(randomMap[1][i][j-1] != -1){
+			if(map[1][i][j-1] != -1){
 				sledeci_nivo = 1;
 			}
-			if(randomMap[2][i][j-1] != -1){
+			if(map[2][i][j-1] != -1){
 				sledeci_nivo = 2;
 			}
 		break;
 
 		default:
-			if(randomMap[0][i][j] != -1){
+			if(map[0][i][j] != -1){
 				sledeci_nivo = 0;
 			}
-			if(randomMap[1][i][j] != -1){
+			if(map[1][i][j] != -1){
 				sledeci_nivo = 1;
 			}
-			if(randomMap[2][i][j] != -1){
+			if(map[2][i][j] != -1){
 				sledeci_nivo = 2;
 			}
 			break;
@@ -295,14 +295,6 @@ void calculate_coordinates(state_t state){
 
 }
 
-void drawingCursor2(int j, int k) {
-	//TODO Calculate i by checking randomMap at (j, k) is it different than -1. (3)
-	//TODO Calculate startX, startY, endX, endY (2)
-	//TODO Call drawingCursor() (1)
-	int startX = 60, startY = 8, endX = 80, endY = 36;
-	drawingCursor(startX, startY, endX, endY);
-}
-
 state_t detect_keypress() {
 	state_t state = IDLE;
 	int button = Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR);
@@ -323,7 +315,7 @@ state_t detect_keypress() {
 	return state;
 }
 
-void screen_coordinates(int nivo){//(state_t state, int razlika){
+void screen_coordinates(int nivo){
 
 	startX = 60 + cX*20 + nivo*2;
 	startY = 8 + cY*28 - nivo*3;
@@ -347,6 +339,10 @@ void move() {
 		prethodno_stanje = sledece_stanje;
 		sledece_stanje = detect_keypress();
 
+		int j = 0;
+			for (j = 0; j < 1000; j++) {
+		}
+
 		while(prethodno_stanje != sledece_stanje){
 
 			prethodno_stanje = sledece_stanje;
@@ -362,22 +358,18 @@ void move() {
 						calculate_coordinates(sledece_stanje);
 
 						if(flagForCursor == 0){
-													if(sadasnji_nivo == 0 && randomMap[sadasnji_nivo][cY-1][cX] == -1){
-														drawBlue(startX, endX, startY, endY);
-													}else{
-														drawMap(randomMap[sadasnji_nivo][cY-1][cX]*20, 0, startX, startY, 20, 28);
-													}
-												}else{
-													flagForCursor = 0;
-												}
+							if(sadasnji_nivo == 0 && map[sadasnji_nivo][cY-1][cX] == -1){
+								drawBlack(startX, endX, startY, endY);
+							}else{
+								drawMap(map[sadasnji_nivo][cY-1][cX]*20, 0, startX, startY, 20, 28);
+							}
+						}else{
+								flagForCursor = 0;
+						}
 
 						screen_coordinates(sledeci_nivo);
 
 						drawingCursor(startX, startY, endX, endY);
-
-
-
-
 
 						break;
 					}
@@ -391,14 +383,14 @@ void move() {
 						calculate_coordinates(sledece_stanje);
 
 						if(flagForCursor == 0){
-													if(sadasnji_nivo == 0 && randomMap[sadasnji_nivo][cY+1][cX] == -1){
-														drawBlue(startX, endX, startY, endY);
-													} else{
-														drawMap(randomMap[sadasnji_nivo][cY+1][cX]*20,0,startX,startY, 20, 28 );
-													}
-												} else{
-														flagForCursor = 0;
-												  }
+							if(sadasnji_nivo == 0 && map[sadasnji_nivo][cY+1][cX] == -1){
+								drawBlack(startX, endX, startY, endY);
+							} else{
+								drawMap(map[sadasnji_nivo][cY+1][cX]*20,0,startX,startY, 20, 28 );
+							}
+						} else{
+							flagForCursor = 0;
+						}
 
 						screen_coordinates(sledeci_nivo);
 
@@ -418,14 +410,14 @@ void move() {
 						calculate_coordinates(sledece_stanje);
 
 						if(flagForCursor == 0){
-													if(sadasnji_nivo == 0 && randomMap[sadasnji_nivo][cY][cX+1] == -1){
-														drawBlue(startX, endX, startY, endY);
-													}else{
-														drawMap(randomMap[sadasnji_nivo][cY][cX+1]*20, 0, startX, startY, 20, 28 );
-													}
-												}else{
-													flagForCursor = 0;
-													}
+							if(sadasnji_nivo == 0 && map[sadasnji_nivo][cY][cX+1] == -1){
+								drawBlack(startX, endX, startY, endY);
+							}else{
+								drawMap(map[sadasnji_nivo][cY][cX+1]*20, 0, startX, startY, 20, 28 );
+							}
+						}else{
+							flagForCursor = 0;
+						}
 
 						screen_coordinates(sledeci_nivo);
 
@@ -445,20 +437,18 @@ void move() {
 						calculate_coordinates(sledece_stanje);
 
 						if(flagForCursor == 0){
-													if(sadasnji_nivo == 0 && randomMap[sadasnji_nivo][cY][cX-1] == -1){
-														drawBlue(startX, endX, startY, endY);
-													}else{
-														drawMap(randomMap[sadasnji_nivo][cY][cX-1]*20, 0, startX, startY, 20, 28 );
-													}
-												}else{
-													flagForCursor = 0;
-													}
+							if(sadasnji_nivo == 0 && map[sadasnji_nivo][cY][cX-1] == -1){
+								drawBlack(startX, endX, startY, endY);
+							}else{
+								drawMap(map[sadasnji_nivo][cY][cX-1]*20, 0, startX, startY, 20, 28 );
+							}
+						}else{
+							flagForCursor = 0;
+						}
 
 						screen_coordinates(sledeci_nivo);
 
 						drawingCursor(startX, startY, endX, endY);
-
-
 
 						break;
 					}
@@ -475,13 +465,13 @@ void move() {
 							}
 					}else if(flag == 1){
 						if(selectable(sadasnji_nivo) == 1){
-							if(randomMap[sadasnji_nivo][cY][cX] == randomMap[flagVisina][flagX][flagY]){ //da li su selektovana dva ista
+							if(map[sadasnji_nivo][cY][cX] == map[flagVisina][flagX][flagY]){ //da li su selektovana dva ista
 								if(sadasnji_nivo != flagVisina || cY != flagX || cX != flagY){ //da li selektujemo samog sebe
-									randomMap[sadasnji_nivo][cY][cX] = -1;
-									randomMap[flagVisina][flagX][flagY] = -1;
+									map[sadasnji_nivo][cY][cX] = -1;
+									map[flagVisina][flagX][flagY] = -1;
 									flag = 0;
 
-									drawMap(randomMap[sadasnji_nivo][cY+1][cX]*20, 0, startX, startY, 20, 28);
+									drawMap(map[sadasnji_nivo][cY+1][cX]*20, 0, startX, startY, 20, 28);
 
 									sadasnji_nivo = calculate_level(cY, cX, sledece_stanje);
 
@@ -510,28 +500,28 @@ void move() {
 }
 
 int selectable(int sadasnji_nivo){
-	if(randomMap[sadasnji_nivo][cY][cX-1] == -1 || randomMap[sadasnji_nivo][cY][cX+1] == -1 || cX == 0 || cX == 9){
-		if(randomMap[sadasnji_nivo][cY][cX] != -1){
+	if(map[sadasnji_nivo][cY][cX-1] == -1 || map[sadasnji_nivo][cY][cX+1] == -1 || cX == 0 || cX == 9){
+		if(map[sadasnji_nivo][cY][cX] != -1){
 			return 1;
 		}
 	}
 	return 0;
 }
 
-void drawMap2(int i, int j, int k){
-	if(randomMap[i][j][k] != -1){
-		drawMap(randomMap[i][j][k] * 20, 0, 60 + k * 20 + 2*i, 8 + j * 28 -3*i, 20, 28);
-	} else if(i == 0){
-		drawBlue(60 + k*20, 60+ k*20+20, 8+j*28, 8+j*28+28);
+void drawElement(int z, int y, int x){
+	if(map[z][y][x] != -1){
+		drawMap(map[z][y][x] * 20, 0, 60 + x * 20 + 2*z, 8 + y * 28 -3*z, 20, 28);
+	} else if(z == 0){
+		drawBlack(60 + x*20, 60+ x*20+20, 8+y*28, 8+y*28+28);
 	}
 
 }
 
 void drawWholeMap(){
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 8; j++) {
-			for (int k = 0; k < 10; k++) {
-				drawMap2(i, j, k);
+	for (int z = 0; z < 3; z++) {
+		for (int y = 0; y < 8; y++) {
+			for (int x = 0; x < 10; x++) {
+				drawElement(z, y, x);
 			}
 		}
 	}
