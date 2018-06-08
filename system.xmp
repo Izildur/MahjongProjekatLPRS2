@@ -25,5 +25,5 @@ EnableParTimingError: 1
 ShowLicenseDialog: 1
 BInfo: 
 Processor: microblaze_0
-ElfImp: 
+ElfImp: SDK/Mahjong_app/Debug/Mahjong_app.elf
 ElfSim: 

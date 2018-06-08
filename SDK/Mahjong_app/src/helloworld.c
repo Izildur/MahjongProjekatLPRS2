@@ -56,9 +56,11 @@
 #define BEG '@'
 
 int q, x, y, oi, R, G, B, RGB, kolona, red, RGBgray;
-int cX = 0, cY = 0; //coordinates of matrix
+int cX = 0, cY = 0; 								//coordinates of matrix
 int oldStartX, oldStartY, oldEndX, oldEndY;
 int startX = 60, startY = 8, endX = 80, endY = 36;	//cursor start, end, coordinates
+int flagX = -1, flagY = -1, flagZ = -1;
+int flagForCursor = 0;
 
 int map[3][8][10];
 
@@ -74,6 +76,9 @@ typedef enum {
 void drawElement(int i, int j, int k);
 void drawWholeMap();
 int selectable(int sadasnji_nivo);
+void drawBlack(int startX, int endX, int startY, int endY);
+void element(int z, int y, int x);
+
 
 //function that generates random game map
 void makeTable() {
@@ -145,7 +150,7 @@ void drawMap(int in_x, int in_y, int out_x, int out_y, int width, int height) {
 }
 
 //drawing cursor for indicating position
-void drawingCursor(int startX, int startY, int endX, int endY) {
+void drawCursor(int startX, int startY, int endX, int endY) {
 
 	for (x = startX; x < endX; x++) {
 		for (y = startY; y < startY + 2; y++) {
@@ -198,68 +203,68 @@ void drawBlack(int startX, int endX, int startY, int endY){
 
 }
 
-int calculate_level(int i, int j, state_t state){
+int calculate_level(int y, int x, state_t state){
 
 	int sledeci_nivo = 0;
 
 	switch(state){
 
 		case DOWN_PRESSED:
-			if(map[0][i+1][j] != -1){
+			if(map[0][y+1][x] != -1){
 				sledeci_nivo = 0;
 			}
-			if(map[1][i+1][j] != -1){
+			if(map[1][y+1][x] != -1){
 				sledeci_nivo = 1;
 			}
-			if(map[2][i+1][j] != -1){
+			if(map[2][y+1][x] != -1){
 				sledeci_nivo = 2;
 			}
 		break;
 
 		case UP_PRESSED:
-			if(map[0][i-1][j] != -1){
+			if(map[0][y-1][x] != -1){
 				sledeci_nivo = 0;
 			}
-			if(map[1][i-1][j] != -1){
+			if(map[1][y-1][x] != -1){
 				sledeci_nivo = 1;
 			}
-			if(map[2][i-1][j] != -1){
+			if(map[2][y-1][x] != -1){
 				sledeci_nivo = 2;
 			}
 		break;
 
 		case RIGHT_PRESSED:
-			if(map[0][i][j+1] != -1){
+			if(map[0][y][x+1] != -1){
 				sledeci_nivo = 0;
 			}
-			if(map[1][i][j+1] != -1){
+			if(map[1][y][x+1] != -1){
 				sledeci_nivo = 1;
 			}
-			if(map[2][i][j+1] != -1){
+			if(map[2][y][x+1] != -1){
 				sledeci_nivo = 2;
 			}
 		break;
 
 		case LEFT_PRESSED:
-			if(map[0][i][j-1] != -1){
+			if(map[0][y][x-1] != -1){
 				sledeci_nivo = 0;
 			}
-			if(map[1][i][j-1] != -1){
+			if(map[1][y][x-1] != -1){
 				sledeci_nivo = 1;
 			}
-			if(map[2][i][j-1] != -1){
+			if(map[2][y][x-1] != -1){
 				sledeci_nivo = 2;
 			}
 		break;
 
 		default:
-			if(map[0][i][j] != -1){
+			if(map[0][y][x] != -1){
 				sledeci_nivo = 0;
 			}
-			if(map[1][i][j] != -1){
+			if(map[1][y][x] != -1){
 				sledeci_nivo = 1;
 			}
-			if(map[2][i][j] != -1){
+			if(map[2][y][x] != -1){
 				sledeci_nivo = 2;
 			}
 			break;
@@ -324,181 +329,6 @@ void screen_coordinates(int nivo){
 
 }
 
-//function that controls switches and buttons
-void move() {
-	int sadasnji_nivo, sledeci_nivo;
-	int flagX = -1, flagY = -1, flagVisina = -1, flag = 0, flagForCursor = 0;
-	state_t prethodno_stanje = IDLE, sledece_stanje = IDLE;
-
-	drawingCursor(startX, startY, endX, endY);
-
-	while(1){
-
-		sadasnji_nivo = calculate_level(cY, cX, IDLE);
-
-		prethodno_stanje = sledece_stanje;
-		sledece_stanje = detect_keypress();
-
-		int j = 0;
-			for (j = 0; j < 1000; j++) {
-		}
-
-		while(prethodno_stanje != sledece_stanje){
-
-			prethodno_stanje = sledece_stanje;
-			sledece_stanje = detect_keypress();
-
-			switch(sledece_stanje){
-
-				case DOWN_PRESSED:
-					if (endY < 213) {
-
-						sledeci_nivo = calculate_level(cY, cX, sledece_stanje);
-
-						calculate_coordinates(sledece_stanje);
-
-						if(flagForCursor == 0){
-							if(sadasnji_nivo == 0 && map[sadasnji_nivo][cY-1][cX] == -1){
-								drawBlack(startX, endX, startY, endY);
-							}else{
-								drawMap(map[sadasnji_nivo][cY-1][cX]*20, 0, startX, startY, 20, 28);
-							}
-						}else{
-								flagForCursor = 0;
-						}
-
-						screen_coordinates(sledeci_nivo);
-
-						drawingCursor(startX, startY, endX, endY);
-
-						break;
-					}
-				break;
-
-				case UP_PRESSED:
-					if (startY > 27) {
-
-						sledeci_nivo = calculate_level(cY, cX, sledece_stanje);
-
-						calculate_coordinates(sledece_stanje);
-
-						if(flagForCursor == 0){
-							if(sadasnji_nivo == 0 && map[sadasnji_nivo][cY+1][cX] == -1){
-								drawBlack(startX, endX, startY, endY);
-							} else{
-								drawMap(map[sadasnji_nivo][cY+1][cX]*20,0,startX,startY, 20, 28 );
-							}
-						} else{
-							flagForCursor = 0;
-						}
-
-						screen_coordinates(sledeci_nivo);
-
-						drawingCursor(startX, startY, endX, endY);
-
-						break;
-					}
-				break;
-
-
-				case LEFT_PRESSED:
-
-					if (startX > 79) {
-
-						sledeci_nivo = calculate_level(cY, cX, sledece_stanje);
-
-						calculate_coordinates(sledece_stanje);
-
-						if(flagForCursor == 0){
-							if(sadasnji_nivo == 0 && map[sadasnji_nivo][cY][cX+1] == -1){
-								drawBlack(startX, endX, startY, endY);
-							}else{
-								drawMap(map[sadasnji_nivo][cY][cX+1]*20, 0, startX, startY, 20, 28 );
-							}
-						}else{
-							flagForCursor = 0;
-						}
-
-						screen_coordinates(sledeci_nivo);
-
-						drawingCursor(startX, startY, endX, endY);
-
-
-						break;
-					}
-				break;
-
-				case RIGHT_PRESSED:
-
-					if (endX < 251) {
-
-						sledeci_nivo = calculate_level(cY, cX, sledece_stanje);
-
-						calculate_coordinates(sledece_stanje);
-
-						if(flagForCursor == 0){
-							if(sadasnji_nivo == 0 && map[sadasnji_nivo][cY][cX-1] == -1){
-								drawBlack(startX, endX, startY, endY);
-							}else{
-								drawMap(map[sadasnji_nivo][cY][cX-1]*20, 0, startX, startY, 20, 28 );
-							}
-						}else{
-							flagForCursor = 0;
-						}
-
-						screen_coordinates(sledeci_nivo);
-
-						drawingCursor(startX, startY, endX, endY);
-
-						break;
-					}
-				break;
-
-				case CENTER_PRESSED:
-					if(flag == 0){ // nije selektovano
-						if(selectable(sadasnji_nivo) == 1){
-								flagX = cY;
-								flagY = cX;
-								flagVisina = sadasnji_nivo;
-								flagForCursor = 1;
-								flag = 1;
-							}
-					}else if(flag == 1){
-						if(selectable(sadasnji_nivo) == 1){
-							if(map[sadasnji_nivo][cY][cX] == map[flagVisina][flagX][flagY]){ //da li su selektovana dva ista
-								if(sadasnji_nivo != flagVisina || cY != flagX || cX != flagY){ //da li selektujemo samog sebe
-									map[sadasnji_nivo][cY][cX] = -1;
-									map[flagVisina][flagX][flagY] = -1;
-									flag = 0;
-
-									drawMap(map[sadasnji_nivo][cY+1][cX]*20, 0, startX, startY, 20, 28);
-
-									sadasnji_nivo = calculate_level(cY, cX, sledece_stanje);
-
-									screen_coordinates(sadasnji_nivo);
-
-									drawWholeMap();
-
-									drawingCursor(startX, startY, endX, endY);
-
-									}
-								}
-							}
-						}
-
-					break;
-
-					case IDLE:
-					break;
-
-			}
-
-		}
-
-	}
-
-}
-
 int selectable(int sadasnji_nivo){
 	if(map[sadasnji_nivo][cY][cX-1] == -1 || map[sadasnji_nivo][cY][cX+1] == -1 || cX == 0 || cX == 9){
 		if(map[sadasnji_nivo][cY][cX] != -1){
@@ -517,6 +347,7 @@ void drawElement(int z, int y, int x){
 
 }
 
+
 void drawWholeMap(){
 	for (int z = 0; z < 3; z++) {
 		for (int y = 0; y < 8; y++) {
@@ -525,6 +356,138 @@ void drawWholeMap(){
 			}
 		}
 	}
+}
+
+void previousElement(int level){
+	if(flagForCursor == 0){
+		if(level == 0 && map[level][cY][cX] == -1){
+			drawBlack(startX, endX, startY, endY);
+		}else{
+
+			drawMap(map[level][cY][cX]*20, 0, startX, startY, 20, 28);
+		}
+	}else{
+			flagForCursor = 0;
+	}
+}
+
+void move(state_t next_state, int level){
+
+	int next_level;
+
+	next_level = calculate_level(cY, cX, next_state);
+
+	previousElement(level);
+
+	calculate_coordinates(next_state);
+
+	screen_coordinates(next_level);
+
+	drawCursor(startX, startY, endX, endY);
+}
+
+//function that controls switches and buttons
+void control() {
+	int level;
+	int flag = 0;
+	state_t state = IDLE, next_state = IDLE;
+
+	drawCursor(startX, startY, endX, endY);
+
+	while(1){
+
+		level = calculate_level(cY, cX, IDLE);
+
+		state = next_state;
+		next_state = detect_keypress();
+
+		int j = 0;
+			for (j = 0; j < 10000; j++) {
+		}
+
+		while(state != next_state){
+
+			state = next_state;
+			next_state = detect_keypress();
+
+			switch(next_state){
+
+				case DOWN_PRESSED:
+					if (endY < 213) {
+
+						move(next_state, level);
+
+					}
+				break;
+
+				case UP_PRESSED:
+					if (startY > 27) {
+
+						move(next_state, level);
+
+					}
+				break;
+
+
+				case LEFT_PRESSED:
+
+					if (startX > 79) {
+
+						move(next_state, level);
+
+					}
+				break;
+
+				case RIGHT_PRESSED:
+
+					if (endX < 251) {
+
+						move(next_state, level);
+
+					}
+				break;
+
+				case CENTER_PRESSED:
+					if(flag == 0){ // nije selektovano
+						if(selectable(level) == 1){
+								flagX = cY;
+								flagY = cX;
+								flagZ = level;
+								flagForCursor = 1;
+								flag = 1;
+							}
+					}else if(flag == 1){
+						if(selectable(level) == 1){
+							if(map[level][cY][cX] == map[flagZ][flagX][flagY]){ //da li su selektovana dva ista
+								if(level != flagZ || cY != flagX || cX != flagY){ //da li selektujemo samog sebe
+									map[level][cY][cX] = -1;
+									map[flagZ][flagX][flagY] = -1;
+									flag = 0;
+
+									level = calculate_level(cY, cX, next_state);
+
+									screen_coordinates(level);
+
+									drawWholeMap();
+
+									drawCursor(startX, startY, endX, endY);
+
+									}
+								}
+							}
+						}
+
+					break;
+
+					case IDLE:
+					break;
+
+			}
+
+		}
+
+	}
+
 }
 
 int main() {
@@ -562,7 +525,7 @@ int main() {
 
 	drawWholeMap();
 
-	move();
+	control();
 
 	cleanup_platform();
 
