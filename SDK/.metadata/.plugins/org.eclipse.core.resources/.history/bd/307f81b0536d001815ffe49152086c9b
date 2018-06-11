@@ -363,6 +363,7 @@ void previousElement(int level){
 			drawBlack(startX, endX, startY, endY);
 		}else{
 			drawMap(map[level][cY][cX]*20, 0, startX, startY, 20, 28);
+			//drawMap(map[level][cY][cX] * 20, 0, 60 + cX * 20 + 2*level, 8 + cY * 28 -3*level, 20, 28);
 		}
 	}else{
 			flagForCursor = 0;

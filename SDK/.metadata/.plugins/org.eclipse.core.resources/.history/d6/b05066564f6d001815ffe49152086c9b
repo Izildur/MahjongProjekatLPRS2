@@ -123,7 +123,6 @@ void makeTable() {
 //extracting pixel data from a picture for printing out on the display
 void drawMap(int in_x, int in_y, int out_x, int out_y, int width, int height) {
 	int ox, oy, oi, iy, ix, ii;
-
 	for (y = 0; y < height; y++) {
 		for (x = 0; x < width; x++) {
 			ox = out_x + x;
@@ -133,7 +132,7 @@ void drawMap(int in_x, int in_y, int out_x, int out_y, int width, int height) {
 			iy = in_y + y;
 
 			ii = iy * mahjong_sprites.width + ix;
-			R = mahjong_sprites.pixel_data[ii*mahjong_sprites.bytes_per_pixel] >> 5;
+			R = mahjong_sprites.pixel_data[ii mahjong_sprites.bytes_per_pixel] >> 5;
 			G = mahjong_sprites.pixel_data[ii*mahjong_sprites.bytes_per_pixel + 1] >> 5;
 			B = mahjong_sprites.pixel_data[ii*mahjong_sprites.bytes_per_pixel + 2] >> 5;
 			R <<= 6;
@@ -362,6 +361,7 @@ void previousElement(int level){
 		if(level == 0 && map[level][cY][cX] == -1){
 			drawBlack(startX, endX, startY, endY);
 		}else{
+
 			drawMap(map[level][cY][cX]*20, 0, startX, startY, 20, 28);
 		}
 	}else{
