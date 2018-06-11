@@ -376,7 +376,8 @@ void previousElement(int level){
 		if(level == 0 && map[level][cY][cX] == -1){
 			drawBlack(startX, endX, startY, endY);
 		}else{
-
+			//drawMap(map[level][cY][cX]*20, 0, startX, startY, 20, 28);
+			//drawWholeMap();
 			drawWholeMap2();
 		}
 	}else{

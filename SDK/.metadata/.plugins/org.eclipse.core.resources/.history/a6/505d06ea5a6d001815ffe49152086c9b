@@ -348,25 +348,11 @@ void drawElement(int z, int y, int x){
 
 
 void drawWholeMap(){
-	for (int z = 0; z < 3; z++) {
+	for (int z = 3; z >= 0; z--) {
 		for (int y = 0; y < 8; y++) {
 			for (int x = 0; x < 10; x++) {
 				drawElement(z, y, x);
 			}
-		}
-	}
-}
-
-void drawWholeMap2(){
-	int highest = 0;
-	for (int y = 0; y < 8; y++) {
-		for (int x = 9; x >=0; x--) {
-			for (int z = 0; z < 3; z++){
-				if(map[z][y][x] != -1){
-					highest = z;
-				}
-			}
-			drawElement(highest, y, x);
 		}
 	}
 }
@@ -376,8 +362,9 @@ void previousElement(int level){
 		if(level == 0 && map[level][cY][cX] == -1){
 			drawBlack(startX, endX, startY, endY);
 		}else{
+			//drawMap(map[level][cY][cX]*20, 0, startX, startY, 20, 28);
+			drawWholeMap();
 
-			drawWholeMap2();
 		}
 	}else{
 			flagForCursor = 0;
